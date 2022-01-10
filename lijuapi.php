@@ -166,3 +166,17 @@ function lijuapi_civicrm_themes(&$themes) {
 //  ]);
 //  _lijuapi_civix_navigationMenu($menu);
 //}
+
+
+
+/**
+ * Implements hook_civicrm_container()
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_container/
+ */
+function lijuapi_civicrm_container(ContainerBuilder $container)
+{
+  if (class_exists('\Civi\Lijuapi\ContainerSpecs')) {
+    $container->addCompilerPass(new \Civi\Lijuapi\ContainerSpecs());
+  }
+}
