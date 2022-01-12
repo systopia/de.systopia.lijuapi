@@ -16,7 +16,7 @@
 
 namespace Civi\Lijuapi;
 
-use CRM_Lijurocketchat_ExtensionUtil as E;
+use CRM_Lijuapi_ExtensionUtil as E;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
