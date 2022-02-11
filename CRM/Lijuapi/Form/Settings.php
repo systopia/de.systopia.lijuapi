@@ -34,7 +34,7 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
 
     $this->add(
       'password',
-      'authorizaion_token',
+      'authorization_token',
       E::ts('LiJu API Authorization Token'),
       array("class" => "huge"),
       TRUE
@@ -82,8 +82,8 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
   protected function getSettingsInForm() {
     return array(
       'api_base_url',
-      'authorizaion_token',
-      'authorizaion_label'
+      'authorization_token',
+      'authorization_label'
     );
   }
 

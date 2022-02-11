@@ -21,6 +21,6 @@
   <p>{ts domain="de.systopia.lijuapi"}label for the Authoriatoin Token. Default is `Authorization: Bearer`{/ts}</p>
 {/htxt}
 
-{htxt id="id-lijuapi-authorizaion_token"}
+{htxt id="id-lijuapi-authorization_token"}
   <p>{ts domain="de.systopia.lijuapi"}API Authorization token{/ts}</p>
 {/htxt}
