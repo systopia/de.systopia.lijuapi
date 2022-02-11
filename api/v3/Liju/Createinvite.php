@@ -11,6 +11,7 @@ use CRM_Lijuapi_ExtensionUtil as E;
  */
 function _civicrm_api3_liju_Createinvite_spec(&$spec) {
   $spec['email']['api.required'] = 1;
+  $spec['contact_id']['api.required'] = 0;
 }
 
 /**
@@ -27,7 +28,9 @@ function _civicrm_api3_liju_Createinvite_spec(&$spec) {
  */
 function civicrm_api3_liju_Createinvite($params) {
   try {
-
+    $api_interface = new CRM_Lijuapi_ApiInterface();
+    $invite_link = $api_interface->get_invite_link();
+    return civicrm_api3_create_success(["liju_api_invite_link" => $invite_link]);
   } catch (Exception $e) {
     throw new API_Exception('Error Message','12345');
   }

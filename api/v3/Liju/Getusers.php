@@ -27,7 +27,9 @@ function _civicrm_api3_liju_Getusers_spec(&$spec) {
  */
 function civicrm_api3_liju_Getusers($params) {
   try {
-
+    $api_interface = new CRM_Lijuapi_ApiInterface();
+    $liju_users = $api_interface->get_users();
+    return civicrm_api3_create_success(["liju_api_users" => $liju_users]);
   } catch (Exception $e) {
     throw new API_Exception('Error Message','12345');
   }

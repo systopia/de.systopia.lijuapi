@@ -21,6 +21,7 @@ use GuzzleHttp\Client;
 class CRM_Lijuapi_ApiInterface {
 
   private $guzzle_client = NULL;
+  private $base_uri = NULL;
 
   /**
    * @throws Exception
@@ -28,15 +29,16 @@ class CRM_Lijuapi_ApiInterface {
   public function __construct($base_uri = NULL) {
     if (empty($base_uri)) {
       $config = CRM_Lijuapi_Config::singleton();
-      $base_uri = $config->getSetting('api_base_url');
-      if (empty($base_uri)) {
+      $this->base_uri = $config->getSetting('api_base_url');
+      if (empty($this->base_uri)) {
         throw new Exception("Invalid Base-URL. Please configure an URL in the settings");
       }
     }
     $this->guzzle_client = new Client([
       // Base URI is used with relative requests
-      'base_uri' => $base_uri,
+      'base_uri' => $this->base_uri,
     ]);
+    echo "hello";
   }
 
 
@@ -46,7 +48,9 @@ class CRM_Lijuapi_ApiInterface {
 
 
   public function get_users() {
-
+    $response = $this->guzzle_client->get($this->base_uri . '/api/v1/civicrm/getusers');
+    print_r($response);
+    return $response;
   }
 
   public function update_liju_user($liju_member_id) {
