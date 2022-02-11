@@ -5,6 +5,8 @@ require_once 'lijuapi.civix.php';
 use CRM_Lijuapi_ExtensionUtil as E;
 // phpcs:enable
 
+use \Symfony\Component\DependencyInjection\ContainerBuilder;
+
 /**
  * Implements hook_civicrm_config().
  *
@@ -139,6 +141,19 @@ function lijuapi_civicrm_themes(&$themes) {
   _lijuapi_civix_civicrm_themes($themes);
 }
 
+
+/**
+ * Implements hook_civicrm_container()
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_container/
+ */
+function lijuapi_civicrm_container(ContainerBuilder $container)
+{
+  if (class_exists('\Civi\Lijuapi\ContainerSpecs')) {
+    $container->addCompilerPass(new \Civi\Lijuapi\ContainerSpecs());
+  }
+}
+
 // --- Functions below this ship commented out. Uncomment as required. ---
 
 /**
@@ -166,17 +181,3 @@ function lijuapi_civicrm_themes(&$themes) {
 //  ]);
 //  _lijuapi_civix_navigationMenu($menu);
 //}
-
-
-
-/**
- * Implements hook_civicrm_container()
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_container/
- */
-function lijuapi_civicrm_container(ContainerBuilder $container)
-{
-  if (class_exists('\Civi\Lijuapi\ContainerSpecs')) {
-    $container->addCompilerPass(new \Civi\Lijuapi\ContainerSpecs());
-  }
-}

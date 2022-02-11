@@ -25,7 +25,7 @@ use \Civi\ActionProvider\Parameter\SpecificationBag;
 use Civi\FormProcessor\API\Exception;
 use CRM_Lijuapi_ExtensionUtil as E;
 
-class GetInviteLinks extends AbstractAction
+class GetInviteLink extends AbstractAction
 {
 
   /**
@@ -36,7 +36,11 @@ class GetInviteLinks extends AbstractAction
    */
   public function getConfigurationSpecification()
   {
-    return new SpecificationBag([]);
+    return new SpecificationBag([
+      // required fields
+      new Specification('contact_id', 'Integer', E::ts('Contact ID'), true),
+      new Specification('email', 'String', E::ts('Email Address'), true),
+    ]);
   }
 
 
@@ -47,11 +51,7 @@ class GetInviteLinks extends AbstractAction
    */
   public function getParameterSpecification()
   {
-    return new SpecificationBag([
-      // required fields
-      new Specification('contact_id', 'Integer', E::ts('Contact ID'), true),
-      new Specification('email', 'String', E::ts('Email Address'), true),
-    ]);
+    return new SpecificationBag([]);
   }
 
   /**

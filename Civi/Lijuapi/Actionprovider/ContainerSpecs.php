@@ -29,18 +29,16 @@ class ContainerSpecs implements CompilerPassInterface
    */
   public function process(ContainerBuilder $container)
   {
-    if (!$container->hasDefinition('action_provider')) {
-      return;
+    if ($container->hasDefinition('action_provider')) {
+      $actionProviderDefinition = $container->getDefinition('action_provider');
+      $actionProviderDefinition->addMethodCall('addAction',
+        [ 'get_invite_link',
+          'Civi\Lijuapi\ActionProvider\Action\GetInviteLink',
+          E::ts('Get Invite Link for submitted user'),
+          [
+            \Civi\ActionProvider\Action\AbstractAction::SINGLE_CONTACT_ACTION_TAG,
+          ]]);
     }
-    $typeFactoryDefinition = $container->getDefinition('action_provider');
-    $typeFactoryDefinition->addMethodCall(
-      'addAction',
-      [
-        'get_invite_link',
-        'Civi\Lijuapi\ActionProvider\Action\GetInviteLink',
-        E::ts('Get Invite Link for submitted user'),
-        [
-          \Civi\ActionProvider\Action\AbstractAction::SINGLE_CONTACT_ACTION_TAG,
-        ]]);
+
   }
 }
