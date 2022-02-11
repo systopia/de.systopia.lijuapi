@@ -31,6 +31,6 @@ function civicrm_api3_liju_Getusers($params) {
     $liju_users = $api_interface->get_users();
     return civicrm_api3_create_success(["liju_api_users" => $liju_users]);
   } catch (Exception $e) {
-    throw new API_Exception('Error Message','12345');
+    throw new API_Exception("Error Occured: {$e->getMessage()}",'12345');
   }
 }

@@ -12,9 +12,6 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
     // get current settings to pre-fill
     $config = CRM_Lijuapi_Config::singleton();
     $current_values = $config->getSettings();
-    if (empty($current_values['authorization_label'])) {
-      $current_values['authorization_label'] = "Authorization: Bearer";
-    }
 
     $this->add(
       'text',
@@ -23,15 +20,6 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       array("class" => "huge"),
       TRUE
     );
-
-    $this->add(
-      'text',
-      'authorization_label',
-      E::ts('LiJu API Authorization Label'),
-      array("class" => "huge"),
-      FALSE
-    );
-
     $this->add(
       'password',
       'authorization_token',
@@ -83,7 +71,6 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
     return array(
       'api_base_url',
       'authorization_token',
-      'authorization_label'
     );
   }
 
