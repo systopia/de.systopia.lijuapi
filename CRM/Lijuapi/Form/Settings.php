@@ -12,14 +12,32 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
     // get current settings to pre-fill
     $config = CRM_Lijuapi_Config::singleton();
     $current_values = $config->getSettings();
-
+    if (empty($current_values['authorization_label'])) {
+      $current_values['authorization_label'] = "Authorization: Bearer";
+    }
 
     $this->add(
       'text',
       'api_base_url',
       E::ts('LiJu API Base URL'),
       array("class" => "huge"),
+      TRUE
+    );
+
+    $this->add(
+      'text',
+      'authorization_label',
+      E::ts('LiJu API Authorization Label'),
+      array("class" => "huge"),
       FALSE
+    );
+
+    $this->add(
+      'password',
+      'authorizaion_token',
+      E::ts('LiJu API Authorization Token'),
+      array("class" => "huge"),
+      TRUE
     );
 
     // submit
@@ -42,8 +60,7 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
   }
 
   public function postProcess() {
-    Civi::log()->log("INFO", "HELLO THERE.");
-    error_log("test");
+    Civi::log()->log("DEBUG", "Post Process Settings Form");
     $config = CRM_Lijuapi_Config::singleton();
     $values = $this->exportValues();
     $settings = $config->getSettings();
@@ -65,6 +82,8 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
   protected function getSettingsInForm() {
     return array(
       'api_base_url',
+      'authorizaion_token',
+      'authorizaion_label'
     );
   }
 

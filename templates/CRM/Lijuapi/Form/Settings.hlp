@@ -16,3 +16,11 @@
 {htxt id="id-lijuapi-baseurl"}
   <p>{ts domain="de.systopia.lijuapi"}Base URL for the API you want to connect to. Must be without the route{/ts}</p>
 {/htxt}
+
+{htxt id="id-lijuapi-authorization_label"}
+  <p>{ts domain="de.systopia.lijuapi"}label for the Authoriatoin Token. Default is `Authorization: Bearer`{/ts}</p>
+{/htxt}
+
+{htxt id="id-lijuapi-authorizaion_token"}
+  <p>{ts domain="de.systopia.lijuapi"}API Authorization token{/ts}</p>
+{/htxt}
