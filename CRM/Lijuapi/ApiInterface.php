@@ -22,23 +22,32 @@ class CRM_Lijuapi_ApiInterface {
 
   private $guzzle_client = NULL;
   private $base_uri = NULL;
+  private $auth_header;
 
   /**
    * @throws Exception
    */
-  public function __construct($base_uri = NULL) {
-    if (empty($base_uri)) {
+  public function __construct($base_uri = NULL, $token = NULL) {
+    if (empty($base_uri) && empty($token)) {
       $config = CRM_Lijuapi_Config::singleton();
       $this->base_uri = $config->getSetting('api_base_url');
       if (empty($this->base_uri)) {
         throw new Exception("Invalid Base-URL. Please configure an URL in the settings");
       }
+      $auth_token = $config->getSetting('authorization_token');
+    } else {
+      $auth_token = $token;
+      $this->base_uri = $base_uri;
     }
+    $this->auth_header = ['headers' =>
+      [
+        'Authorization' => "Bearer {$auth_token}"
+      ],
+    ];
     $this->guzzle_client = new Client([
       // Base URI is used with relative requests
       'base_uri' => $this->base_uri,
     ]);
-    echo "hello";
   }
 
 
@@ -48,9 +57,13 @@ class CRM_Lijuapi_ApiInterface {
 
 
   public function get_users() {
-    $response = $this->guzzle_client->get($this->base_uri . '/api/v1/civicrm/getusers');
-    print_r($response);
-    return $response;
+    $response = $this->guzzle_client->request(
+      'GET',
+      '/api/v1/civicrm/getusers',
+      $this->auth_header
+    );
+    $content = $response->getBody()->getContents();
+    return $content;
   }
 
   public function update_liju_user($liju_member_id) {
