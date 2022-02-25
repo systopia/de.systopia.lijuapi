@@ -11,6 +11,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
  */
 function _civicrm_api3_liju_Updateuser_spec(&$spec) {
   $spec['liju_member_id']['api.required'] = 1;
+  $spec['email']['api.required'] = 0;
+  $spec['verband']['api.required'] = 0;
 }
 
 /**
@@ -28,9 +30,9 @@ function _civicrm_api3_liju_Updateuser_spec(&$spec) {
 function civicrm_api3_liju_Updateuser($params) {
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();
-    $invite_link = $api_interface->get_invite_link();
-    return civicrm_api3_create_success(["liju_api_invite_link" => $invite_link]);
+    $api_interface->update_liju_user($params['liju_member_id'], $params['email'], $params['verband']);
+    return civicrm_api3_create_success(["Contact with LiJu MemberID ({$params['liju_member_id']}) updated to new LV" => $params['new_lv']]);
   } catch (Exception $e) {
-    throw new API_Exception('Error Message','12345');
+    throw new API_Exception($e->getMessage());
   }
 }

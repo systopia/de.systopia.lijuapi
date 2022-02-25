@@ -25,14 +25,14 @@ class CRM_Lijuapi_ApiInterface {
   private $header;
 
   /**
-   * @throws API_Exception
+   * @throws CRM_Lijuapi_Exceptions_InvalidBaseUrlException
    */
   public function __construct($base_uri = NULL, $token = NULL) {
     if (empty($base_uri) && empty($token)) {
       $config = CRM_Lijuapi_Config::singleton();
       $this->base_uri = $config->getSetting('api_base_url');
       if (empty($this->base_uri)) {
-        throw new API_Exception("Invalid Base-URL. Please configure an URL in the settings");
+        throw new CRM_Lijuapi_Exceptions_InvalidBaseUrlException("Invalid Base-URL. Please configure an URL in the settings");
       }
       $auth_token = $config->getSetting('authorization_token');
     } else {
@@ -51,16 +51,13 @@ class CRM_Lijuapi_ApiInterface {
   }
 
 
-  public function get_invite_link($email) {
-
-  }
-
   /**
    * @param $liju_member_id
    * @param $email
    * @param $new_lv
    * @return void
-   * @throws \GuzzleHttp\Exception\GuzzleException|CRM_Lijuapi_Exceptions_UpdateLvException
+   * @throws CRM_Lijuapi_Exceptions_UpdateLvException
+   * @throws \GuzzleHttp\Exception\GuzzleException
    */
   public function change_lv($liju_member_id, $email, $new_lv) {
     $this->header['form_params']['verband'] = $new_lv;
@@ -86,16 +83,62 @@ class CRM_Lijuapi_ApiInterface {
       '/api/v1/civicrm/getusers',
       $this->header
     );
+    // TODO: check if array is passed out!
     $content = $response->getBody()->getContents();
     return $content;
   }
 
-  public function update_liju_user($liju_member_id) {
-
+  /**
+   * @param $email
+   * @param $liju_member_id
+   * @param $verband
+   * @return mixed
+   * @throws CRM_Lijuapi_Exceptions_CreateInviteLinkException
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function get_invite_link($email, $liju_member_id, $verband) {
+    $this->header['form_params']['verband'] = $verband;
+    $this->header['form_params']['mail'] = $email;
+    $this->header['form_params']['ljs_memberid'] = $liju_member_id;
+    $response = $this->guzzle_client->request(
+      'POST',
+      "api/v1/civicrm/invite/new",
+      $this->header
+    );
+    $content = json_decode($response->getBody()->getContents(), TRUE);
+    if ($content['success'] != TRUE) {
+      throw new CRM_Lijuapi_Exceptions_CreateInviteLinkException("Failed to create Invite Link for member {$liju_member_id} ({$email})! Error Message: " . $content['error']);
+    }
+    // TODO: parse invite link from content! Needs testing
+    return $content;
   }
 
-  private function execute_api_all () {
 
+  /**
+   * @param $liju_member_id
+   * @param $email
+   * @param $verband
+   * @return void
+   * @throws CRM_Lijuapi_Exceptions_UpdateUserException
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function update_liju_user($liju_member_id, $email, $verband) {
+    if(empty($email) && empty($verband)){
+      Civi::log()->log("DEBUG", "[CRM_Lijuapi_ApiInterface->update_liju_user] No User Data specified to update. Nothing to do here.");
+      return;
+    }
+    $this->header['form_params']['verband'] = $verband;
+    $this->header['form_params']['mail'] = $email;
+
+    $response = $this->guzzle_client->request(
+      'POST',
+      "api/v1/civicrm/updateuser/{$liju_member_id}",
+      $this->header
+    );
+    $content = json_decode($response->getBody()->getContents(), TRUE);
+    if ($content['success'] != TRUE) {
+      throw new CRM_Lijuapi_Exceptions_UpdateUserException("Failed to update data for member {$liju_member_id}! Email: {$email}; Verband: {$verband} Error Message: " . $content['error']);
+    }
   }
 
 }
