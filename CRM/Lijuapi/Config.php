@@ -23,6 +23,29 @@ class CRM_Lijuapi_Config {
   private static $singleton = NULL;
   private static $settings  = NULL;
 
+  /**
+   * Mapping groups_id => Group Name for country memberships
+   * @var string[]
+   */
+  public static $LV_group_mapping = [
+    "160	" => "Baden-Wuerttemberg Mitglieder",
+    "161" => "Bayern Mitglieder",
+    "162" => "Berlin Mitglieder",
+    "163" => "Brandenburg Mitglieder",
+    "164" => "Bremen Mitglieder",
+    "165" => "Hamburg Mitglieder",
+    "166" => "Hessen Mitglieder",
+    "167" => "Mecklenburg-Vorpommern Mitglieder",
+    "168" => "Niedersachsen Mitglieder",
+    "169" => "Nordrhein-Westfalen Mitglieder",
+    "170" => "Rheinland-Pfalz Mitglieder",
+    "171" => "Saarland Mitglieder",
+    "172" => "Sachsen Mitglieder",
+    "173" => "Sachsen-Anhalt Mitglieder",
+    "174" => "Schleswig-Holstein Mitglieder",
+    "175" => "Thueringen Mitglieder",
+  ];
+
 
   protected $jobs = NULL;
   /**
