@@ -55,6 +55,13 @@ class CRM_Lijuapi_ApiInterface {
 
   }
 
+  /**
+   * @param $liju_member_id
+   * @param $email
+   * @param $new_lv
+   * @return void
+   * @throws \GuzzleHttp\Exception\GuzzleException|CRM_Lijuapi_Exceptions_UpdateLvException
+   */
   public function change_lv($liju_member_id, $email, $new_lv) {
     $this->header['form_params']['verband'] = $new_lv;
     $this->header['form_params']['mail'] = $email;
@@ -63,10 +70,16 @@ class CRM_Lijuapi_ApiInterface {
       "api/v1/civicrm/updateuser/{$liju_member_id}",
       $this->header
     );
-    $content = $response->getBody()->getContents();
-    echo "hello there";
+    $content = json_decode($response->getBody()->getContents(), TRUE);
+    if ($content['success'] != TRUE) {
+      throw new CRM_Lijuapi_Exceptions_UpdateLvException("LandesVerband for member ID {$liju_member_id} ({$email}) wasn't successful! Error Message: " . $content['error']);
+    }
   }
 
+  /**
+   * @return string
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
   public function get_users() {
     $response = $this->guzzle_client->request(
       'GET',
