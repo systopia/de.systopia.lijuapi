@@ -30,8 +30,8 @@ function _civicrm_api3_liju_Createinvite_spec(&$spec) {
 function civicrm_api3_liju_Createinvite($params) {
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();
-    $api_interface->get_invite_link($params['email'], $params['liju_member_id'], $params['verband']);
-    return civicrm_api3_create_success(["Contact with LiJu MemberID ({$params['liju_member_id']}) updated to new LV" => $params['new_lv']]);
+    $invite_link = $api_interface->get_invite_link($params['email'], $params['liju_member_id'], $params['verband']);
+    return civicrm_api3_create_success(["invite_link" => $invite_link]);
   } catch (Exception $e) {
     throw new API_Exception($e->getMessage());
   }
