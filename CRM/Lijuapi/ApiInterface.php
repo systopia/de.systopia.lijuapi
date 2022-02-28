@@ -110,7 +110,7 @@ class CRM_Lijuapi_ApiInterface {
       throw new CRM_Lijuapi_Exceptions_CreateInviteLinkException("Failed to create Invite Link for member {$liju_member_id} ({$email})! Error Message: " . $content['error']);
     }
     // TODO: parse invite link from content! Needs testing
-    return $content;
+    return $content['invite_link'];
   }
 
 
