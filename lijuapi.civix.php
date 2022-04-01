@@ -91,9 +91,9 @@ function _lijuapi_civix_civicrm_config(&$config = NULL) {
   }
   $configured = TRUE;
 
-  $template =& CRM_Core_Smarty::singleton();
+  $template = CRM_Core_Smarty::singleton();
 
-  $extRoot = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+  $extRoot = __DIR__ . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
 
   if (is_array($template->template_dir)) {
@@ -449,5 +449,11 @@ function _lijuapi_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
  */
 function _lijuapi_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, []);
+  $entityTypes = array_merge($entityTypes, [
+    'CRM_Lijuapi_DAO_lijuErrorHandler' => [
+      'name' => 'LijuErrorHandler',
+      'class' => 'CRM_Lijuapi_DAO_lijuErrorHandler',
+      'table' => 'civicrm_lijuapi_errorhandler',
+    ],
+  ]);
 }
