@@ -26,6 +26,12 @@
   </div>
 
   <div class="crm-section">
+    <div class="label">{$form.username.label}<a onclick='CRM.help("{ts domain='de.systopia.lijuapi'}Username{/ts}", {literal}{"id":"id-lijuapi-username","file":"CRM\/Lijuapi\/Form\/Settings"}{/literal}); return false;' href="#" title="{ts domain='de.systopia.lijuapi'}Help{/ts}" class="helpicon"></a></div>
+    <div class="content">{$form.username.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="crm-section">
     <div class="label">{$form.authorization_token.label}<a onclick='CRM.help("{ts domain='de.systopia.lijuapi'}Api Authorization Token{/ts}", {literal}{"id":"id-lijuapi-authorization_token","file":"CRM\/Lijuapi\/Form\/Settings"}{/literal}); return false;' href="#" title="{ts domain='de.systopia.lijuapi'}Help{/ts}" class="helpicon"></a></div>
     <div class="content">{$form.authorization_token.html}</div>
     <div class="clear"></div>
