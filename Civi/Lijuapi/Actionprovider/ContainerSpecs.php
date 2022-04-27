@@ -32,7 +32,8 @@ class ContainerSpecs implements CompilerPassInterface
     if ($container->hasDefinition('action_provider')) {
       $actionProviderDefinition = $container->getDefinition('action_provider');
       $actionProviderDefinition->addMethodCall('addAction',
-        [ 'get_invite_link',
+        // TODO: Classname here?
+        [ 'GetInviteLink',
           'Civi\Lijuapi\ActionProvider\Action\GetInviteLink',
           E::ts('Get Invite Link for submitted user'),
           [

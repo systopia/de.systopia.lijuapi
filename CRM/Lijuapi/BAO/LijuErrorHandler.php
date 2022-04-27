@@ -1,16 +1,16 @@
 <?php
 use CRM_Lijuapi_ExtensionUtil as E;
 
-class CRM_Lijuapi_BAO_lijuErrorHandler extends CRM_Lijuapi_DAO_lijuErrorHandler {
+class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler {
 
   /**
    * Create a new LijuErrorHandler based on array-data
    *
    * @param array $params key-value pairs
-   * @return CRM_Lijuapi_DAO_lijuErrorHandler|NULL
+   * @return CRM_Lijuapi_DAO_LijuErrorHandler|NULL
    */
   public static function create($params) {
-    $className = 'CRM_Lijuapi_DAO_lijuErrorHandler';
+    $className = 'CRM_Lijuapi_DAO_LijuErrorHandler';
     $entityName = 'LijuErrorHandler';
     $hook = empty($params['id']) ? 'create' : 'edit';
 

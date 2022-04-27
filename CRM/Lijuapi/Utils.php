@@ -46,7 +46,7 @@ class CRM_Lijuapi_Utils {
     $values['is_consumed'] = FALSE;
     $values['timestamp'] = date("YmdHis");
     // Save it to database
-    $item = new CRM_Lijuapi_BAO_lijuErrorHandler();
+    $item = new CRM_Lijuapi_BAO_LijuErrorHandler();
     $item->copyValues($values);
     $item->save();
   }
