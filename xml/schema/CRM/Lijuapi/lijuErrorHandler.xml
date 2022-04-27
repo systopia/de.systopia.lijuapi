@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+  <base>CRM/Lijuapi</base>
+  <class>LijuErrorHandler</class>
+  <name>civicrm_lijuapi_errorhandler</name>
+  <comment>When communicating with the Liju Api and something goes wrong in an automated update, this table stores changes</comment>
+  <log>true</log>
+
+  <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique LijuErrorHandler ID</comment>
+    <html>
+      <type>Number</type>
+    </html>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
+    <name>contact_id</name>
+    <type>int unsigned</type>
+    <comment>FK to Contact</comment>
+  </field>
+
+  <field>
+    <name>email</name>
+    <type>varchar</type>
+    <length>256</length>
+    <required>true</required>
+    <comment>Email that is to be changed</comment>
+    <add>4.6</add>
+  </field>
+
+  <field>
+    <name>email_id</name>
+    <type>int unsigned</type>
+    <comment>FK to CiviCRM-Email</comment>
+  </field>
+
+  <field>
+    <name>is_consumed</name>
+    <type>boolean</type>
+    <required>true</required>
+    <default>0</default>
+    <comment>True means the NewsStoreSource has consumed the NewsStoreItem.</comment>
+    <add>4.6</add>
+  </field>
+
+  <field>
+    <name>landesverband</name>
+    <type>varchar</type>
+    <length>4</length>
+    <required>true</required>
+    <comment>Landesverband Abbrevation</comment>
+    <add>4.6</add>
+  </field>
+
+  <field>
+    <name>group_id</name>
+    <type>int unsigned</type>
+    <comment>FK to CiviCRM-GroupID</comment>
+  </field>
+
+  <field>
+    <name>timestamp</name>
+    <type>timestamp</type>
+    <required>true</required>
+    <comment>Date the Change was attempted</comment>
+    <add>4.6</add>
+  </field>
+
+  <field>
+    <name>is_consumed</name>
+    <type>boolean</type>
+    <required>true</required>
+    <default>0</default>
+    <comment>True means the API call is succesfull executed</comment>
+    <add>4.6</add>
+  </field>
+
+</table>

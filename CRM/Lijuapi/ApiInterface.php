@@ -27,21 +27,23 @@ class CRM_Lijuapi_ApiInterface {
   /**
    * @throws CRM_Lijuapi_Exceptions_InvalidBaseUrlException
    */
-  public function __construct($base_uri = NULL, $token = NULL) {
-    if (empty($base_uri) && empty($token)) {
+  public function __construct($base_uri = NULL, $username = NULL, $token = NULL) {
+    if (empty($base_uri) && empty($username) && empty($token)) {
       $config = CRM_Lijuapi_Config::singleton();
       $this->base_uri = $config->getSetting('api_base_url');
       if (empty($this->base_uri)) {
         throw new CRM_Lijuapi_Exceptions_InvalidBaseUrlException("Invalid Base-URL. Please configure an URL in the settings");
       }
-      $auth_token = $config->getSetting('authorization_token');
+      $auth_token = $config->getSetting('username') . ":" .  $config->getSetting('authorization_token');
     } else {
       $auth_token = $token;
       $this->base_uri = $base_uri;
     }
+    // encode username/password as base_64
+    $auth_token = base64_encode($auth_token);
     $this->header = ['headers' =>
       [
-        'Authorization' => "Bearer {$auth_token}"
+        'Authorization' => "Basic {$auth_token}"
       ],
     ];
     $this->guzzle_client = new Client([
