@@ -52,6 +52,10 @@ class api_v3_LijuErrorHandlerTest extends \PHPUnit\Framework\TestCase implements
 
     $created = $this->callAPISuccess('LijuErrorHandler', 'create', [
       'contact_id' => 1,
+      'email' => 'admin@unittest.org',
+      'email_id' => 123,
+      'landesverband' => 'BB',
+      'group_id' => 1,
     ]);
     $this->assertTrue(is_numeric($created['id']));
 
