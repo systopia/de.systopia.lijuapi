@@ -33,17 +33,25 @@ class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler 
   public static function get_non_consumed_items($contact_id=NULL) {
     $sql = "
           SELECT * FROM civicrm_lijuapi_errorhandler
-          WHERE is_consumed IS NOT NULL;";
+            WHERE is_consumed = 0
+            ORDER BY timestamp DESC;";
     $dao = CRM_Core_DAO::executeQuery($sql);
     $return_values = [];
+    $used_ids = [];
     while ($dao->fetch()) {
       // if we have a contact_id, filter for it
       if(!empty($contact_id)) {
         if($dao->contact_id == $contact_id) {
           $return_values[$dao->id] = $dao->toArray();
+          $dao->free();
+          return  $return_values;
         }
       } else {
+        if (in_array($dao->contact_id, $used_ids)) {
+          continue;
+        }
         $return_values[$dao->id] = $dao->toArray();
+        array_push($used_ids, $dao->contact_id);
       }
     }
 
