@@ -450,9 +450,9 @@ function _lijuapi_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  */
 function _lijuapi_civix_civicrm_entityTypes(&$entityTypes) {
   $entityTypes = array_merge($entityTypes, [
-    'CRM_Lijuapi_DAO_lijuErrorHandler' => [
+    'CRM_Lijuapi_DAO_LijuErrorHandler' => [
       'name' => 'LijuErrorHandler',
-      'class' => 'CRM_Lijuapi_DAO_lijuErrorHandler',
+      'class' => 'CRM_Lijuapi_DAO_LijuErrorHandler',
       'table' => 'civicrm_lijuapi_errorhandler',
     ],
   ]);

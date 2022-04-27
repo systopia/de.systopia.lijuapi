@@ -44,7 +44,7 @@ class CRM_Lijuapi_Utils {
   public static function set_error_case($values) {
     CRM_Lijuapi_Utils::validate_error_case($values);
     $values['is_consumed'] = FALSE;
-    $values['timestamp'] = date("YmdHis");
+//    $values['timestamp'] = date("YmdHis");  // don't need to set this I think, should be done automatically
     // Save it to database
     $item = new CRM_Lijuapi_BAO_LijuErrorHandler();
     $item->copyValues($values);

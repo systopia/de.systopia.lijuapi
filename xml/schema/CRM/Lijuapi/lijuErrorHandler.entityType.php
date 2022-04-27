@@ -4,7 +4,7 @@
 return [
   [
     'name' => 'LijuErrorHandler',
-    'class' => 'CRM_Lijuapi_DAO_lijuErrorHandler',
+    'class' => 'CRM_Lijuapi_DAO_LijuErrorHandler',
     'table' => 'civicrm_lijuapi_errorhandler',
   ],
 ];
