@@ -82,19 +82,23 @@ class GetInviteLink extends AbstractAction
   protected function doAction(ParameterBagInterface $parameters, ParameterBagInterface $output)
   {
     try {
+      // get Landesverband for User
+      $landesverband = \CRM_Lijuapi_Utils::get_lv($parameters->getParameter('contact_id'));
+
       // get link for User
       $result = civicrm_api3('Liju', 'createinvite', [
         'email' => $parameters->getParameter('email'),
+        'liju_member_id' => $parameters->getParameter('contact_id'),
+        'verband' => $landesverband,
       ]);
-
-      $liju_member_id = $result['id'];
-
-      $liju_link = "API Call here";
+      $liju_link = $result['values']['invite_link'];
 
       // TODO add invite Link to custom field on Contact
+      // Is this needed here, or will this be done via Formprocessor??
+      // This will also be needed for the Email to the user.
 
       // Set link as return parameter
-      $output->setParameter('liju_member_id', $liju_member_id);
+      $output->setParameter('liju_member_id', $parameters->getParameter('contact_id'));
       $output->setParameter('error', '');
       $output->setParameter('liju_invite_link', $liju_link);
 
