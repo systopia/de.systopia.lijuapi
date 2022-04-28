@@ -75,6 +75,15 @@
   </field>
 
   <field>
+    <name>errorcode</name>
+    <type>varchar</type>
+    <length>1024</length>
+    <required>true</required>
+    <comment>Error Code from LiJu API</comment>
+    <add>4.6</add>
+  </field>
+
+  <field>
     <name>is_consumed</name>
     <type>boolean</type>
     <required>true</required>
