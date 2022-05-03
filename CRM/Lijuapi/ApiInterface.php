@@ -86,7 +86,7 @@ class CRM_Lijuapi_ApiInterface {
       $this->header
     );
     // TODO: check if array is passed out!
-    $content = json_decode($response->getBody()->getContents());
+    $content = json_decode($response->getBody()->getContents(), TRUE);
     return $content;
   }
 
