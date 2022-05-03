@@ -8,6 +8,16 @@ use CRM_Lijuapi_ExtensionUtil as E;
 use \Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
+ * Implements hook_civicrm_container()
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_container/
+ */
+function lijuapi_civicrm_container(ContainerBuilder $container)
+{
+    $container->addCompilerPass(new \Civi\Lijuapi\ContainerSpecs());
+}
+
+/**
  * Implements hook_civicrm_config().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
@@ -141,18 +151,6 @@ function lijuapi_civicrm_themes(&$themes) {
   _lijuapi_civix_civicrm_themes($themes);
 }
 
-
-/**
- * Implements hook_civicrm_container()
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_container/
- */
-function lijuapi_civicrm_container(ContainerBuilder $container)
-{
-  if (class_exists('\Civi\Lijuapi\ContainerSpecs')) {
-    $container->addCompilerPass(new \Civi\Lijuapi\ContainerSpecs());
-  }
-}
 
 function lijuapi_civicrm_post($op, $objectName, $objectId, &$objectRef) {
   // only react for Email Entity update and edit

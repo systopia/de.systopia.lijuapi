@@ -29,7 +29,6 @@ class ContainerSpecs implements CompilerPassInterface
    */
   public function process(ContainerBuilder $container)
   {
-    error_log("test");
     if ($container->hasDefinition('action_provider')) {
       $actionProviderDefinition = $container->getDefinition('action_provider');
       $actionProviderDefinition->addMethodCall('addAction',
