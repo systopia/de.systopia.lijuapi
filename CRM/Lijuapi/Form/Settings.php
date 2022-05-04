@@ -40,9 +40,17 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       'select',
       'invitelink_custom_field',
       E::ts("Invite Link Custom Field"), CRM_Lijuapi_Utils::get_contact_custom_fields(),
-      ['class' => 'crm-select2']
+      ['class' => 'crm-select2'],
+      TRUE
     );
 
+    $this->add(
+      'text',
+      'notification_email',
+      E::ts('Notification Email Address'),
+      array("class" => "huge"),
+      TRUE
+    );
 
     // submit
     $this->addButtons(array(
@@ -86,7 +94,8 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       'api_base_url',
       'username',
       'authorization_token',
-      'invitelink_custom_field'
+      'invitelink_custom_field',
+      'notification_email',
     );
   }
 

@@ -28,3 +28,7 @@
 {htxt id="id-lijuapi-invitelink_custom_field"}
   <p>{ts domain="de.systopia.lijuapi"}Custom Field to save the LiJuApi Invite Link. Should be chosen only once!{/ts}</p>
 {/htxt}
+
+{htxt id="id-lijuapi-id-lijuapi-notification_email"}
+  <p>{ts domain="de.systopia.lijuapi"}This Email Address is used to notify someone in case of API Errors.{/ts}</p>
+{/htxt}
