@@ -105,6 +105,11 @@ class CRM_Lijuapi_SyncUsers {
     throw new CRM_Lijuapi_Exceptions_NoEmailForMemberException("User doesn't have an primary Email! o_O");
   }
 
+  /**
+   * @param $contact_id
+   * @return array
+   * @throws CiviCRM_API3_Exception
+   */
   private function get_user_email($contact_id) {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
@@ -164,7 +169,11 @@ class CRM_Lijuapi_SyncUsers {
     }
   }
 
+  /**
+   * @param $liju_member_id
+   * @return void
+   */
   private function get_user_recrod_by_id($liju_member_id) {
-
+    // TODO this still needed?
   }
 }
