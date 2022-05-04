@@ -35,6 +35,10 @@ class CRM_Lijuapi_SyncUsers {
     $this->liju_users = $result['values']['liju_api_users'];
   }
 
+  /**
+   * @return void
+   * @throws CiviCRM_API3_Exception
+   */
   public function run() {
     // Iterate Users from  per group!
     foreach (CRM_Lijuapi_Utils::$landesverband_mapping as $lv => $civi_group_id) {
