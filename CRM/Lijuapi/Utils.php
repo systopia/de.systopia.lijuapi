@@ -138,8 +138,47 @@ class CRM_Lijuapi_Utils {
     }
   }
 
+  /**
+   * @param $contact_id
+   * @param $invite_link
+   * @return void
+   * @throws CRM_Lijuapi_Exceptions_SaveInviteLinkToContactException
+   * @throws CiviCRM_API3_Exception
+   * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
+   */
   public static function add_link_to_user($contact_id, $invite_link){
-    // TODO IMPLEMENT ME
+    $config = CRM_Lijuapi_Config::singleton();
+    $custom_field_id = $config->getSetting('invitelink_custom_field');
+    if (empty($custom_field_id)) {
+      throw new CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException("No invite Custom Field configured. Please configure that in the Extension Settings");
+    }
+    $custom_field = "custom_" . $custom_field_id;
+    $result = civicrm_api3('Contact', 'create', [
+      'id' => $contact_id,
+      $custom_field => $invite_link,
+    ]);
+    if ($result['is_error'] != 0) {
+      throw new CRM_Lijuapi_Exceptions_SaveInviteLinkToContactException("Couldn't save Invite Link {$invite_link} to Contact {$contact_id}");
+    }
+  }
+
+
+  /**
+   * @return array
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function get_contact_custom_fields() {
+    // get all custom fields
+    $result = civicrm_api3('CustomField', 'get', [
+      'sequential' => 1,
+      'return' => ["id", "label"],
+      'options' => ['limit' => 0],
+    ]);
+    $custom_fields = [];
+    foreach ($result['values'] as $fields) {
+      $custom_fields[$fields['id']] = $fields['label'];
+    }
+    return $custom_fields;
   }
 
   public static function uniq_lv_in_liju_api() {

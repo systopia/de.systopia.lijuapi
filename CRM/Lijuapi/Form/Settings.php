@@ -35,6 +35,15 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       TRUE
     );
 
+    // Select Custom Field for Invite Links
+    $this->addElement(
+      'select',
+      'invitelink_custom_field',
+      E::ts("Invite Link Custom Field"), CRM_Lijuapi_Utils::get_contact_custom_fields(),
+      ['class' => 'crm-select2']
+    );
+
+
     // submit
     $this->addButtons(array(
       array(
@@ -55,12 +64,10 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
   }
 
   public function postProcess() {
-    Civi::log()->log("DEBUG", "Post Process Settings Form");
     $config = CRM_Lijuapi_Config::singleton();
     $values = $this->exportValues();
     $settings = $config->getSettings();
-    $settings_in_form = $this->getSettingsInForm();
-    foreach ($settings_in_form as $name) {
+    foreach ($this->getSettingsInForm() as $name) {
       $settings[$name] = CRM_Utils_Array::value($name, $values, NULL);
     }
     $config->setSettings($settings);
@@ -79,6 +86,7 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       'api_base_url',
       'username',
       'authorization_token',
+      'invitelink_custom_field'
     );
   }
 

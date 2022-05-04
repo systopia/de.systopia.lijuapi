@@ -24,3 +24,7 @@
 {htxt id="id-lijuapi-authorization_token"}
   <p>{ts domain="de.systopia.lijuapi"}API Authorization token{/ts}</p>
 {/htxt}
+
+{htxt id="id-lijuapi-invitelink_custom_field"}
+  <p>{ts domain="de.systopia.lijuapi"}Custom Field to save the LiJuApi Invite Link. Should be chosen only once!{/ts}</p>
+{/htxt}
