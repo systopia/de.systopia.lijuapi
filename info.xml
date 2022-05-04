@@ -22,7 +22,7 @@
   </compatibility>
   <comments>This is a new, undeveloped module</comments>
   <classloader>
-    <psr4 prefix="Civi\" path="Civi"/>
+    <psr4 prefix="Civi\" path="Civi" />
   </classloader>
   <civix>
     <namespace>CRM/Lijuapi</namespace>
