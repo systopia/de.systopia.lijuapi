@@ -32,3 +32,8 @@
 {htxt id="id-lijuapi-id-lijuapi-notification_email"}
   <p>{ts domain="de.systopia.lijuapi"}This Email Address is used to notify someone in case of API Errors.{/ts}</p>
 {/htxt}
+
+{htxt id="id-lijuapi-notification_email_active"}
+  <p>{ts domain="de.systopia.lijuapi"}If Email Notification Enabled, a notification Email will be sent to the above configured Email Address when an error occured while communicating to the  LiJu API{/ts}</p>
+{/htxt}
+

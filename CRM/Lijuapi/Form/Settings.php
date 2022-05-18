@@ -52,6 +52,12 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       TRUE
     );
 
+    $this->add(
+      'checkbox',
+      'notification_email_active',
+      E::ts('Activate Notification via Email')
+    );
+
     // submit
     $this->addButtons(array(
       array(
@@ -96,6 +102,7 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       'authorization_token',
       'invitelink_custom_field',
       'notification_email',
+      'notification_email_active',
     );
   }
 

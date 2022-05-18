@@ -180,9 +180,12 @@ class CRM_Lijuapi_Utils {
     return $custom_fields;
   }
 
-  public static function uniq_lv_in_liju_api() {
-
-
+  public static function notify_error() {
+    $config = CRM_Lijuapi_Config::singleton();
+    if(!$config->getSetting('notification_email_active')) {
+      return;
+    }
+    $target_email = $config->getSetting('notification_email');
   }
 
 }
