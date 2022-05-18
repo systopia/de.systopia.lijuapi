@@ -82,30 +82,49 @@ class GetInviteLink extends AbstractAction
   protected function doAction(ParameterBagInterface $parameters, ParameterBagInterface $output)
   {
     try {
+      $contact_id = $parameters->getParameter('contact_id');
       // get Landesverband for User
-      $landesverband = \CRM_Lijuapi_Utils::get_lv($parameters->getParameter('contact_id'));
-
+      $landesverband = \CRM_Lijuapi_Utils::get_lv($contact_id);
+      $email = $parameters->getParameter('email');
       // get link for User
       $result = civicrm_api3('Liju', 'createinvite', [
-        'email' => $parameters->getParameter('email'),
-        'liju_member_id' => $parameters->getParameter('contact_id'),
+        'email' => $email,
+        'liju_member_id' => $contact_id,
         'verband' => $landesverband,
       ]);
-      $liju_link = $result['values']['invite_link'];
+      $liju_invite_link = $result['values']['invite_link'];
 
       // TODO add invite Link to custom field on Contact
-      // Is this needed here, or will this be done via Formprocessor??
+      \CRM_Lijuapi_Utils::add_link_to_user($contact_id, $liju_invite_link);
       // This will also be needed for the Email to the user.
+      // TODO who sends the confirmation Email to the user?
 
       // Set link as return parameter
       $output->setParameter('liju_member_id', $parameters->getParameter('contact_id'));
       $output->setParameter('error', '');
-      $output->setParameter('liju_invite_link', $liju_link);
+      $output->setParameter('liju_invite_link', $liju_invite_link);
 
     } catch (\Exception $ex) {
-      $output->setParameter('liju_member_id', '');
-      $output->setParameter('liju_invite_link', '');
+      $this->generate_error_report($contact_id, $email, $landesverband, $ex->getMessage());
+
+      $output->setParameter('liju_member_id', $contact_id);
+      $output->setParameter('liju_invite_link', $liju_invite_link);
       $output->setParameter('error', $ex->getMessage());
     }
+  }
+
+  private function generate_error_report($contact_id, $email, $landesverband, $error_message) {
+    $result = civicrm_api3('Email', 'get', [
+      'sequential' => 1,
+      'email' => $email,
+      'contact_id' => $contact_id,
+    ]);
+    $values['contact_id'] = $contact_id;
+    $values['email'] = $email;
+    $values['email_id'] = $result['id'];
+    $values['landesverband'] = $landesverband;
+    $values['errorcode'] = $error_message;
+    \CRM_Lijuapi_Utils::set_error_case($values);
+    // TODO: Send Email?
   }
 }

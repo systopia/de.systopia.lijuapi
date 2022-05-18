@@ -117,7 +117,6 @@ class CRM_Lijuapi_Utils {
   public static function set_error_case($values) {
     CRM_Lijuapi_Utils::validate_error_case($values);
     $values['is_consumed'] = FALSE;
-//    $values['timestamp'] = date("YmdHis");  // don't need to set this I think, should be done automatically
     // Save it to database
     $item = new CRM_Lijuapi_BAO_LijuErrorHandler();
     $item->copyValues($values);
@@ -130,7 +129,7 @@ class CRM_Lijuapi_Utils {
    * @throws CRM_Lijuapi_Exceptions_MissingErrorValueException
    */
   public static function validate_error_case($values) {
-    $fields = ['contact_id', 'email', 'email_id', 'landesverband', 'group_id'];
+    $fields = ['contact_id', 'email', 'email_id', 'landesverband', 'group_id', 'errorcode'];
     foreach ($fields as $item)  {
       if (empty($values[$item])) {
         throw new CRM_Lijuapi_Exceptions_MissingErrorValueException("Missing Value for {$item}");
