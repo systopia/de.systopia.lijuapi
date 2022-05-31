@@ -99,25 +99,33 @@ function lijuapi_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 
   $contact_id = $objectRef->contact_id;
   $email = $objectRef->email;
+  $email_id = $objectRef->id;
   // check if this contact is a member
   // TODO: What happens in case of multiple emails? Should only the primary email
   // be in the Database?
   try{
     $landesverband = CRM_Lijuapi_Utils::get_lv($contact_id);
-  } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
-    // contact isn't a member, nothing to do here.
-    return;
-  }
-  // TODO: Update member Entry
-  try{
     $result = civicrm_api3('Liju', 'changelv', [
       'email' => $email,
       'liju_member_id' => $contact_id,
       'new_lv' => $landesverband,
     ]);
+  } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
+    // contact isn't a member, nothing to do here.
+    return;
   } catch (CRM_Lijuapi_Exceptions_UpdateUserException $e) {
     // Log error, then put information in civicrm_lijuapi_errorhandler
     Civi::log()->log("ERROR", "[UpdateUserException] Failed to communicate with LiJuApi. Error Message: " . $e->getMessage());
+    $values = [
+      'contact_id'    => $contact_id,
+      'email'         => $email,
+      'email_id'      => $email_id,
+      'landesverband' => $landesverband,
+      'group_id'      => CRM_Lijuapi_Utils::get_lv_id($landesverband),
+      'errorcode'     => $e->getMessage()
+    ];
+    CRM_Lijuapi_Utils::set_error_case($values);
+    // TODO: Send fail Email?
   } catch (Exception $e) {
     // Log error! Something weird happened here!
     Civi::log()->log("ERROR", "Unknown Exception in Update Email.{$op} while communicating to LijuAPI. Error Message: " . $e->getMessage());
