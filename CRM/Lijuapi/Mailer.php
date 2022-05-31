@@ -74,7 +74,7 @@ class CRM_Lijuapi_Mailer {
    * @throws \CiviCRM_API3_Exception
    */
   private function create_template($template_name) {
-    $template_content = file_get_contents(__DIR__ . "/../../../templates/mailer_template.tpl");
+    $template_content = file_get_contents(__DIR__ . "/../../templates/mailer_template.tpl");
     $result = civicrm_api3('MessageTemplate', 'create', [
       'sequential'  => 1,
       'msg_title'   => $template_name,
