@@ -180,9 +180,23 @@ class CRM_Lijuapi_Utils {
     return $custom_fields;
   }
 
-  public static function uniq_lv_in_liju_api() {
-
-
+  /**
+   * @param $contact_id
+   * @param $contact_email
+   * @param $landesverband
+   * @param $error_message
+   * @return void
+   * @throws CiviCRM_API3_Exception
+   *
+   * // TODO: When are we sending? Directly when error occurs, or via Cron from databse error_table
+   */
+  public static function notify_error($contact_id, $contact_email, $landesverband, $error_message) {
+    $config = CRM_Lijuapi_Config::singleton();
+    if(!$config->getSetting('notification_email_active')) {
+      return;
+    }
+    $mailer = new CRM_Lijuapi_Mailer();
+    $mailer->send_error_mail($contact_id, $contact_email, $landesverband, $error_message);
   }
 
 }

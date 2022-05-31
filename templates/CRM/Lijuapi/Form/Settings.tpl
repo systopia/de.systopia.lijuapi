@@ -43,6 +43,12 @@
     <div class="clear"></div>
   </div>
 
+    <div class="crm-section">
+    <div class="label">{$form.notification_email_active.label}<a onclick='CRM.help("{ts domain='de.systopia.lijuapi'}Email Notification Enabled.{/ts}", {literal}{"id":"id-lijuapi-notification_email_active","file":"CRM\/Lijuapi\/Form\/Settings"}{/literal}); return false;' href="#" title="{ts domain='de.systopia.lijuapi'}Help{/ts}" class="helpicon"></a></div>
+    <div class="content">{$form.notification_email_active.html}</div>
+    <div class="clear"></div>
+  </div>
+
   <div class="crm-section">
     <div class="label">{$form.invitelink_custom_field.label}<a onclick='CRM.help("{ts domain='de.systopia.lijuapi'}Custom Field{/ts}", {literal}{"id":"id-lijuapi-invitelink_custom_field","file":"CRM\/Lijuapi\/Form\/Settings"}{/literal}); return false;' href="#" title="{ts domain='de.systopia.lijuapi'}Help{/ts}" class="helpicon"></a></div>
     <div class="content">{$form.invitelink_custom_field.html}</div>
