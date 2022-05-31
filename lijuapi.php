@@ -27,15 +27,6 @@ function lijuapi_civicrm_config(&$config) {
 }
 
 /**
- * Implements hook_civicrm_xmlMenu().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
- */
-function lijuapi_civicrm_xmlMenu(&$files) {
-  _lijuapi_civix_civicrm_xmlMenu($files);
-}
-
-/**
  * Implements hook_civicrm_install().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
@@ -90,50 +81,6 @@ function lijuapi_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 }
 
 /**
- * Implements hook_civicrm_managed().
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed
- */
-function lijuapi_civicrm_managed(&$entities) {
-  _lijuapi_civix_civicrm_managed($entities);
-}
-
-/**
- * Implements hook_civicrm_caseTypes().
- *
- * Add CiviCase types provided by this extension.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
- */
-function lijuapi_civicrm_caseTypes(&$caseTypes) {
-  _lijuapi_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Add Angular modules provided by this extension.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
- */
-function lijuapi_civicrm_angularModules(&$angularModules) {
-  // Auto-add module files from ./ang/*.ang.php
-  _lijuapi_civix_civicrm_angularModules($angularModules);
-}
-
-/**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
- */
-function lijuapi_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _lijuapi_civix_civicrm_alterSettingsFolders($metaDataFolders);
-}
-
-/**
  * Implements hook_civicrm_entityTypes().
  *
  * Declare entity types provided by this module.
@@ -144,14 +91,6 @@ function lijuapi_civicrm_entityTypes(&$entityTypes) {
   _lijuapi_civix_civicrm_entityTypes($entityTypes);
 }
 
-/**
- * Implements hook_civicrm_themes().
- */
-function lijuapi_civicrm_themes(&$themes) {
-  _lijuapi_civix_civicrm_themes($themes);
-}
-
-
 function lijuapi_civicrm_post($op, $objectName, $objectId, &$objectRef) {
   // only react for Email Entity update and edit
   if($objectName != "Email" && in_array($op, ['view', 'merge', 'create', 'delete'])) {
@@ -160,25 +99,33 @@ function lijuapi_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 
   $contact_id = $objectRef->contact_id;
   $email = $objectRef->email;
+  $email_id = $objectRef->id;
   // check if this contact is a member
   // TODO: What happens in case of multiple emails? Should only the primary email
   // be in the Database?
   try{
     $landesverband = CRM_Lijuapi_Utils::get_lv($contact_id);
-  } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
-    // contact isn't a member, nothing to do here.
-    return;
-  }
-  // TODO: Update member Entry
-  try{
     $result = civicrm_api3('Liju', 'changelv', [
       'email' => $email,
       'liju_member_id' => $contact_id,
       'new_lv' => $landesverband,
     ]);
+  } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
+    // contact isn't a member, nothing to do here.
+    return;
   } catch (CRM_Lijuapi_Exceptions_UpdateUserException $e) {
     // Log error, then put information in civicrm_lijuapi_errorhandler
     Civi::log()->log("ERROR", "[UpdateUserException] Failed to communicate with LiJuApi. Error Message: " . $e->getMessage());
+    $values = [
+      'contact_id'    => $contact_id,
+      'email'         => $email,
+      'email_id'      => $email_id,
+      'landesverband' => $landesverband,
+      'group_id'      => CRM_Lijuapi_Utils::get_lv_id($landesverband),
+      'errorcode'     => $e->getMessage()
+    ];
+    CRM_Lijuapi_Utils::set_error_case($values);
+    // TODO: Send fail Email?
   } catch (Exception $e) {
     // Log error! Something weird happened here!
     Civi::log()->log("ERROR", "Unknown Exception in Update Email.{$op} while communicating to LijuAPI. Error Message: " . $e->getMessage());

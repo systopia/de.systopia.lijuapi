@@ -22,10 +22,14 @@
   </compatibility>
   <comments>This is a new, undeveloped module</comments>
   <classloader>
-    <psr4 prefix="Civi\" path="Civi" />
+    <psr4 prefix="Civi\" path="Civi"/>
   </classloader>
   <civix>
     <namespace>CRM/Lijuapi</namespace>
     <angularModule>crmLijuapi</angularModule>
+    <format>22.05.2</format>
   </civix>
+  <mixins>
+    <mixin>menu-xml@1.0.0</mixin>
+  </mixins>
 </extension>

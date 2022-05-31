@@ -109,8 +109,19 @@ class CRM_Lijuapi_Utils {
     return FALSE;
   }
 
+
+  /**
+   * @param $landesverband
+   * @return int
+   */
+    public static function get_lv_id($landesverband) {
+    return self::$landesverband_mapping[$landesverband];
+  }
+
+
   /**
    * @param $values
+   * needed values: ['contact_id', 'email', 'email_id', 'landesverband', 'group_id', 'errorcode']
    * @return void
    * @throws CRM_Lijuapi_Exceptions_MissingErrorValueException
    */
