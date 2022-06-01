@@ -38,29 +38,29 @@ class CRM_Lijuapi_Utils {
 // Abbrevation after
 // https://www.datenportal.bmbf.de/portal/de/G122.html#:~:text=SN%20%3D%20Sachsen%3B,TH%20%3D%20Th%C3%BCringen.
 // Mapping 2 letter abbrevation to civicrm_group_id
-//  public static $landesverband_mapping = [
-//    'BW' => 160, // Baden_Wuerttemberg_Mitglieder_160
-//    'BY' => 161, // Bayern_Mitglieder_161
-//    'BE' => 162, // Berlin_Mitglieder_162
-//    'BB' => 163, // Brandenburg_Mitglieder_163
-//    'HB' => 164, // Bremen_Mitglieder_164
-//    'HH' => 165, // Hamburg_Mitglieder_165
-//    'HE' => 166, // Hessen_Mitglieder_166
-//    'MV' => 167, // Mecklenburg_Vorpommern_Mitglied_167
-//    'NI' => 168, // Niedersachsen_Mitglieder_168
-//    'NW' => 169, // Nordrhein_Westfalen_Mitglieder_169
-//    'RP' => 170, // Rheinland_Pfalz_Mitglieder_170
-//    'SL' => 171, // Saarland_Mitglieder_171
-//    'SN' => 172, // Sachsen_Mitglieder_172
-//    'ST' => 173, // Sachsen_Anhalt_Mitglieder_173
-//    'SH' => 174, // Schleswig_Holstein_Mitglieder_174
-//    'TH' => 175, // Thueringen_Mitglieder_175
-//  ];
+  public static $landesverband_mapping = [
+    'BW' => 160, // Baden_Wuerttemberg_Mitglieder_160
+    'BY' => 161, // Bayern_Mitglieder_161
+    'BE' => 162, // Berlin_Mitglieder_162
+    'BB' => 163, // Brandenburg_Mitglieder_163
+    'HB' => 164, // Bremen_Mitglieder_164
+    'HH' => 165, // Hamburg_Mitglieder_165
+    'HE' => 166, // Hessen_Mitglieder_166
+    'MV' => 167, // Mecklenburg_Vorpommern_Mitglied_167
+    'NI' => 168, // Niedersachsen_Mitglieder_168
+    'NW' => 169, // Nordrhein_Westfalen_Mitglieder_169
+    'RP' => 170, // Rheinland_Pfalz_Mitglieder_170
+    'SL' => 171, // Saarland_Mitglieder_171
+    'SN' => 172, // Sachsen_Mitglieder_172
+    'ST' => 173, // Sachsen_Anhalt_Mitglieder_173
+    'SH' => 174, // Schleswig_Holstein_Mitglieder_174
+    'TH' => 175, // Thueringen_Mitglieder_175
+  ];
 
   // local test mapping
-  public static $landesverband_mapping = [
-    'BW' => 5, // Badenwürtenberg Lokal (test)
-  ];
+//  public static $landesverband_mapping = [
+//    'BW' => 5, // Badenwürtenberg Lokal (test)
+//  ];
 
   private static $singleton = NULL;
 
