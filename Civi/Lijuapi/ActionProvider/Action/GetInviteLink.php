@@ -125,6 +125,12 @@ class GetInviteLink extends AbstractAction
     $values['landesverband'] = $landesverband;
     $values['errorcode'] = $error_message;
     \CRM_Lijuapi_Utils::set_error_case($values);
-    // TODO: Send Email?
+
+    $config = \CRM_Lijuapi_Config::singleton();
+    // only send notification if configured
+    if ($config->getSetting('notification_email_active')) {
+      $mailer = new \CRM_Lijuapi_Mailer();
+      $mailer->send_error_mail($contact_id, $email, $landesverband, $error_message);
+    }
   }
 }
