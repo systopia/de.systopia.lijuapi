@@ -16,7 +16,12 @@
 use CRM_Lijuapi_ExtensionUtil as E;
 
 
-
+/**
+ * CRM_Lijuapi_Mailer
+ * Mailer class implementation. Sends a pre configured template to a configured Email
+ *
+ * Use CRM_Lijuapi_Mailer->send_error_mail()
+ */
 class CRM_Lijuapi_Mailer {
 
   private $email_from              = 'civi-notify@linksjugend-solid.de';
@@ -27,6 +32,9 @@ class CRM_Lijuapi_Mailer {
 
   private $to_email = "";
 
+  /**
+   * @throws CRM_Lijuapi_Exceptions_MailAddressConfigurationException
+   */
   public function __construct() {
     $config = CRM_Lijuapi_Config::singleton();
     $this->to_email = $config->getSetting('notification_email');

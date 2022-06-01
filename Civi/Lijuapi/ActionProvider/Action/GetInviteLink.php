@@ -25,6 +25,7 @@ use \Civi\ActionProvider\Parameter\SpecificationBag;
 use Civi\FormProcessor\API\Exception;
 use CRM_Lijuapi_ExtensionUtil as E;
 
+
 class GetInviteLink extends AbstractAction
 {
 
@@ -113,6 +114,15 @@ class GetInviteLink extends AbstractAction
     }
   }
 
+  /**
+   * @param $contact_id
+   * @param $email
+   * @param $landesverband
+   * @param $error_message
+   * @return void
+   * @throws \CRM_Lijuapi_Exceptions_MissingErrorValueException
+   * @throws \CiviCRM_API3_Exception
+   */
   private function generate_error_report($contact_id, $email, $landesverband, $error_message) {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
