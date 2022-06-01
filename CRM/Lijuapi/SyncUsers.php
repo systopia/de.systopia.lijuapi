@@ -146,6 +146,11 @@ class CRM_Lijuapi_SyncUsers {
     return [];
   }
 
+  /**
+   * @param $needle
+   * @param $search_attribute
+   * @return false|int|string
+   */
   private function get_liju_user_record($needle, $search_attribute) {
     return array_search($needle, array_column($this->liju_users, $search_attribute));
   }

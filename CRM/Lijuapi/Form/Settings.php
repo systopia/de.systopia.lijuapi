@@ -77,6 +77,9 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
     parent::buildQuickForm();
   }
 
+  /**
+   * @return void
+   */
   public function postProcess() {
     $config = CRM_Lijuapi_Config::singleton();
     $values = $this->exportValues();
