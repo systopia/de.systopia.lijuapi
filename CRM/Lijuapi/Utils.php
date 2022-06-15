@@ -38,24 +38,45 @@ class CRM_Lijuapi_Utils {
 // Abbrevation after
 // https://www.datenportal.bmbf.de/portal/de/G122.html#:~:text=SN%20%3D%20Sachsen%3B,TH%20%3D%20Th%C3%BCringen.
 // Mapping 2 letter abbrevation to civicrm_group_id
+//  public static $landesverband_mapping = [
+//    'BW' => 160, // Baden_Wuerttemberg_Mitglieder_160
+//    'BY' => 161, // Bayern_Mitglieder_161
+//    'BE' => 162, // Berlin_Mitglieder_162
+//    'BB' => 163, // Brandenburg_Mitglieder_163
+//    'HB' => 164, // Bremen_Mitglieder_164
+//    'HH' => 165, // Hamburg_Mitglieder_165
+//    'HE' => 166, // Hessen_Mitglieder_166
+//    'MV' => 167, // Mecklenburg_Vorpommern_Mitglied_167
+//    'NI' => 168, // Niedersachsen_Mitglieder_168
+//    'NW' => 169, // Nordrhein_Westfalen_Mitglieder_169
+//    'RP' => 170, // Rheinland_Pfalz_Mitglieder_170
+//    'SL' => 171, // Saarland_Mitglieder_171
+//    'SN' => 172, // Sachsen_Mitglieder_172
+//    'ST' => 173, // Sachsen_Anhalt_Mitglieder_173
+//    'SH' => 174, // Schleswig_Holstein_Mitglieder_174
+//    'TH' => 175, // Thueringen_Mitglieder_175
+//  ];
+
+// DEV
   public static $landesverband_mapping = [
-    'BW' => 160, // Baden_Wuerttemberg_Mitglieder_160
-    'BY' => 161, // Bayern_Mitglieder_161
-    'BE' => 162, // Berlin_Mitglieder_162
-    'BB' => 163, // Brandenburg_Mitglieder_163
-    'HB' => 164, // Bremen_Mitglieder_164
-    'HH' => 165, // Hamburg_Mitglieder_165
-    'HE' => 166, // Hessen_Mitglieder_166
-    'MV' => 167, // Mecklenburg_Vorpommern_Mitglied_167
-    'NI' => 168, // Niedersachsen_Mitglieder_168
-    'NW' => 169, // Nordrhein_Westfalen_Mitglieder_169
-    'RP' => 170, // Rheinland_Pfalz_Mitglieder_170
-    'SL' => 171, // Saarland_Mitglieder_171
-    'SN' => 172, // Sachsen_Mitglieder_172
-    'ST' => 173, // Sachsen_Anhalt_Mitglieder_173
-    'SH' => 174, // Schleswig_Holstein_Mitglieder_174
-    'TH' => 175, // Thueringen_Mitglieder_175
+    'BW' => 18, // Baden_Wuerttemberg_Mitglieder_18
+    'BY' => 19, // Bayern_Mitglieder_19
+    'BE' => 20, // Berlin_Mitglieder_20
+    'BB' => 21, // Brandenburg_Mitglieder_21
+    'HB' => 22, // Bremen_Mitglieder_22
+    'HH' => 23, // Hamburg_Mitglieder_23
+    'HE' => 24, // Hessen_Mitglieder_24
+    'MV' => 25, // Mecklenburg_Vorpommern_Mitglied_25
+    'NI' => 26, // Niedersachsen_Mitglieder_26
+    'NW' => 27, // Nordrhein_Westfalen_Mitglieder_27
+    'RP' => 28, // Rheinland_Pfalz_Mitglieder_28
+    'SL' => 29, // Saarland_Mitglieder_29
+    'SN' => 30, // Sachsen_Mitglieder_30
+    'ST' => 31, // Sachsen_Anhalt_Mitglieder_31
+    'SH' => 32, // Schleswig_Holstein_Mitglieder_32
+    'TH' => 33, // Thueringen_Mitglieder_33
   ];
+
 
   // local test mapping
 //  public static $landesverband_mapping = [
