@@ -37,11 +37,7 @@ class GetInviteLink extends AbstractAction
    */
   public function getConfigurationSpecification()
   {
-    return new SpecificationBag([
-      // required fields
-      new Specification('contact_id', 'Integer', E::ts('Contact ID'), true),
-      new Specification('email', 'String', E::ts('Email Address'), true),
-    ]);
+    return new SpecificationBag([]);
   }
 
 
@@ -52,7 +48,11 @@ class GetInviteLink extends AbstractAction
    */
   public function getParameterSpecification()
   {
-    return new SpecificationBag([]);
+    return new SpecificationBag([
+      // required fields
+      new Specification('contact_id', 'Integer', E::ts('Contact ID'), true),
+      new Specification('email', 'String', E::ts('Email Address'), true),
+    ]);
   }
 
   /**
