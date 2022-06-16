@@ -195,6 +195,30 @@ class CRM_Lijuapi_Utils {
 
 
   /**
+   * @param $contact_id
+   * @return void
+   * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
+   * @throws CRM_Lijuapi_Exceptions_RemoveInviteLinkException
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function remove_invite_link_from_user($contact_id) {
+    $config = CRM_Lijuapi_Config::singleton();
+    $custom_field_id = $config->getSetting('invitelink_custom_field');
+    if (empty($custom_field_id)) {
+      throw new CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException("No invite Custom Field configured. Please configure that in the Extension Settings");
+    }
+    $custom_field = "custom_" . $custom_field_id;
+    $result = civicrm_api3('Contact', 'create', [
+      'id' => 202,
+      'custom_7' => "",
+    ]);
+    if ($result['is_error'] != 0) {
+      throw new CRM_Lijuapi_Exceptions_RemoveInviteLinkException("Failed to remove invite Link from User {$contact_id}. Error Message: {$result['error_messsage']}");
+    }
+  }
+
+
+  /**
    * @return array
    * @throws CiviCRM_API3_Exception
    */

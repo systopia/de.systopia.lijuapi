@@ -69,6 +69,8 @@ class CRM_Lijuapi_SyncUsers {
           $liju_id = $this->liju_users[$user_index]['ljs_memberid'];
           if ($liju_id != $contact_id){
             $this->update_user_record($liju_id, $contact_id, $email, $lv);
+            // delete invite link from user here, since we have a match!
+            CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
             // we are done here!
             continue;
           }
@@ -78,6 +80,7 @@ class CRM_Lijuapi_SyncUsers {
             // TODO Verify this!
             // !! NOTE: CiviCRM ist datenführend hier! Update the record no matter what
             $this->update_user_record($contact_id, $contact_id,  $email, $lv);
+            CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
           }
 
         }
