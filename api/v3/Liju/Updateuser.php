@@ -13,6 +13,7 @@ function _civicrm_api3_liju_Updateuser_spec(&$spec) {
   $spec['liju_member_id']['api.required'] = 1;
   $spec['email']['api.required'] = 0;
   $spec['verband']['api.required'] = 0;
+  $spec['old_user_id']['api.required'] = 1;
 }
 
 /**
@@ -31,6 +32,6 @@ function _civicrm_api3_liju_Updateuser_spec(&$spec) {
  */
 function civicrm_api3_liju_Updateuser($params) {
     $api_interface = new CRM_Lijuapi_ApiInterface();
-    $api_interface->update_liju_user($params['liju_member_id'], $params['email'], $params['verband']);
+    $api_interface->update_liju_user($params['old_user_id'], $params['liju_member_id'], $params['email'], $params['verband']);
     return civicrm_api3_create_success(["Contact with LiJu MemberID ({$params['liju_member_id']}) updated to new LV" => $params['new_lv']]);
 }

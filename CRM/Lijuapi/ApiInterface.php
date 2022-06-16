@@ -124,7 +124,7 @@ class CRM_Lijuapi_ApiInterface {
    * @throws CRM_Lijuapi_Exceptions_UpdateUserException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function update_liju_user($liju_member_id, $email, $verband) {
+  public function update_liju_user($old_user_id, $liju_member_id, $email, $verband) {
     if(empty($email) && empty($verband)){
       Civi::log()->log("DEBUG", "[CRM_Lijuapi_ApiInterface->update_liju_user] No User Data specified to update. Nothing to do here.");
       return;
@@ -134,7 +134,7 @@ class CRM_Lijuapi_ApiInterface {
 
     $response = $this->guzzle_client->request(
       'POST',
-      "api/v1/civicrm/updateuser/{$liju_member_id}",
+      "api/v1/civicrm/updateuser/{$old_user_id}",
       $this->header
     );
     $content = json_decode($response->getBody()->getContents(), TRUE);
