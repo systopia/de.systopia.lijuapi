@@ -61,22 +61,23 @@ class CRM_Lijuapi_SyncUsers {
               'verband' => $lv,
             ]);
             // TODO implement add_link_to_user!
-            CRM_Lijuapi_Utils::add_link_to_user($result['values']['invite_link'], $civi_group_info['contact_id']);
+            CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
             continue;
           }
           $email = $user_record['email'];
           $user_index = $user_record['user_index'];
-          if ($this->liju_users[$user_index]['ljs_member_id'] != $contact_id){
-            $this->update_user_record($contact_id, $email, $lv);
+          $liju_id = $this->liju_users[$user_index]['ljs_memberid'];
+          if ($liju_id != $contact_id){
+            $this->update_user_record($liju_id, $contact_id, $email, $lv);
             // we are done here!
             continue;
           }
           // check if that user can be looked up by member ID
-          $liju_user_key = $this->get_liju_user_record($contact_id, 'ljs_member_id');
+          $liju_user_key = $this->get_liju_user_record($contact_id, 'ljs_memberid');
           if (!empty($liju_user_key)) {
             // TODO Verify this!
             // !! NOTE: CiviCRM ist datenführend hier! Update the record no matter what
-            $this->update_user_record($contact_id, $email, $lv);
+            $this->update_user_record($contact_id, $contact_id,  $email, $lv);
           }
 
         }
@@ -164,8 +165,9 @@ class CRM_Lijuapi_SyncUsers {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  private function update_user_record($contact_id, $email, $lv) {
+  private function update_user_record($old_user_id, $contact_id, $email, $lv) {
     $result = civicrm_api3('Liju', 'updateuser', [
+      'old_user_id' => $old_user_id,
       'liju_member_id' => $contact_id,
       'email' => $email,
       'verband' => $lv,
