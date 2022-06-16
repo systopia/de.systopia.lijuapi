@@ -50,14 +50,14 @@ class CRM_Lijuapi_SyncUsers {
       try {
         foreach ($result['values'] as $civi_group_info) {
           $contact_id = $civi_group_info['contact_id'];
-          $civi_user_emails = $this->get_user_email($contact_id);
-          $user_record = $this->get_liju_user_by_civi_mail($civi_user_emails);
+          $civi_user_email = $this->get_user_email($contact_id);
+          $user_record = $this->get_liju_user_by_civi_mail($civi_user_email);
           if (empty($user_record)) {
             // create Link and save it to user
             // TODO commented out for debugging
             $result = civicrm_api3('Liju', 'createinvite', [
-              'email' => $this->get_primary_email($civi_user_emails),
-              'liju_member_id' => $civi_group_info['contact_id'],
+              'email' => $civi_user_email['email'],
+              'liju_member_id' => $contact_id,
               'verband' => $lv,
             ]);
             // TODO implement add_link_to_user!
@@ -66,7 +66,7 @@ class CRM_Lijuapi_SyncUsers {
           }
           $email = $user_record['email'];
           $user_index = $user_record['user_index'];
-          if ($this->liju_users[$user_index]['ljs_member_id'] != $civi_group_info['contact_id']){
+          if ($this->liju_users[$user_index]['ljs_member_id'] != $contact_id){
             $this->update_user_record($contact_id, $email, $lv);
             // we are done here!
             continue;
@@ -75,13 +75,14 @@ class CRM_Lijuapi_SyncUsers {
           $liju_user_key = $this->get_liju_user_record($contact_id, 'ljs_member_id');
           if (!empty($liju_user_key)) {
             // TODO Verify this!
-            // !! NOTE: CiviCRM ist datenführend hier!
+            // !! NOTE: CiviCRM ist datenführend hier! Update the record no matter what
             $this->update_user_record($contact_id, $email, $lv);
           }
 
         }
       } catch (Exception $e) {
         Civi::log()->log("ERROR", " Error syncing contact {$contact_id}. {$e->getMessage()}");
+        // TODO Email notification here? More/different Error handling needed?
       }
     }
   }
@@ -114,13 +115,16 @@ class CRM_Lijuapi_SyncUsers {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
       'contact_id' => $contact_id,
+      'is_primary' => 1
     ]);
+    if ($result['count'] != 1 ){
+      return [];
+    }
     $return_values = [];
-    foreach ($result['values'] as $email_record) {
-      $return_values[$email_record['id']] = [
-        'id' => $email_record['id'],
-        'email' => $email_record['email'],
-        'is_primary' => $email_record['is_primary'],
+    foreach ($result['values'] as $email_result) {
+      $return_values = [
+        'email' => $email_result['email'],
+        'id' => $email_result['id'],
       ];
     }
     return $return_values;
@@ -129,19 +133,17 @@ class CRM_Lijuapi_SyncUsers {
   /**
    * Search cached liju members for a match to one of the provided user emails
    *
-   * @param $emails
+   * @param $email
    * @param string $search_attribute
    * @return array
    */
-  private function get_liju_user_by_civi_mail($emails) {
-    foreach ($emails as $email_data) {
-      $lookup = $this->get_liju_user_record($email_data['email'], 'email');
-      if (!empty($lookup)) {
-        return [
-          'email' => $email_data['email'],
-          'user_index' => $lookup,
-        ];
-      }
+  private function get_liju_user_by_civi_mail($email) {
+    $lookup = $this->get_liju_user_record($email['email'], 'email');
+    if (!empty($lookup)) {
+      return [
+        'email' => $email['email'],
+        'user_index' => $lookup,
+      ];
     }
     return [];
   }
