@@ -77,6 +77,7 @@ class CRM_Lijuapi_Utils {
     'TH' => 33, // Thueringen_Mitglieder_33
   ];
 
+  public static $debug = True;
 
   // local test mapping
 //  public static $landesverband_mapping = [
@@ -324,11 +325,13 @@ class CRM_Lijuapi_Utils {
     $email_id = $objectRef->id;
 
     try{
+      CRM_Lijuapi_Utils::log("Email hook editing {$contact_id}, setting email to {$email} ({$email_id})");
       $landesverband = CRM_Lijuapi_Utils::get_lv($contact_id);
       // check if this contact is a member and if this contact doesn't have an invite link!
       // if invite link is available, then we cannot update the user (yet), since it isn't created yet.
       if (self::has_invite_link($contact_id)) {
         // nothing to do here
+        CRM_Lijuapi_Utils::log("User {$contact_id} still has an invite link, Email update wont be executed since no user is in Liju Membership Database yet.");
         return;
       }
       $result = civicrm_api3('Liju', 'changelv', [
@@ -338,6 +341,7 @@ class CRM_Lijuapi_Utils {
       ]);
     } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
       // contact isn't a member, nothing to do here.
+      CRM_Lijuapi_Utils::log("User {$contact_id} isn't a member. No update Executed.");
       return;
     } catch (CRM_Lijuapi_Exceptions_UpdateUserException $e) {
       // Log error, then put information in civicrm_lijuapi_errorhandler
@@ -376,12 +380,13 @@ class CRM_Lijuapi_Utils {
         // nothing to do here
         return;
       }
-
       $contact_id = $objectRef['0'];    // seems weird to access it like this
+      CRM_Lijuapi_Utils::log("Changing LV for user {$contact_id}");
       if (self::has_invite_link($contact_id)) {
         // nothing to do here. If invite link is still active then we don't need to update LV
         // Sync job needs to be activated for this to be acurate!
         // otherwise we need to accept a fail from change_lv
+        CRM_Lijuapi_Utils::log("User {$contact_id} still has an invite Link, user will not be updated in Liju Database");
         return;
       }
       $landesverband = self::get_lv_from_group_id($objectId);
