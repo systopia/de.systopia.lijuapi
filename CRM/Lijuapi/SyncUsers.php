@@ -132,7 +132,7 @@ class CRM_Lijuapi_SyncUsers {
   /**
    * @param $contact_id
    * @return array
-   * @throws CiviCRM_API3_Exception
+   * @throws CiviCRM_API3_Exception|CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException
    */
   private function get_user_email($contact_id) {
     $result = civicrm_api3('Email', 'get', [
@@ -141,7 +141,7 @@ class CRM_Lijuapi_SyncUsers {
       'is_primary' => 1
     ]);
     if ($result['count'] != 1 ){
-      return [];
+      throw new CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException("Found {$result['count']} Email Results for User {$contact_id}");
     }
     $return_values = [];
     foreach ($result['values'] as $email_result) {
