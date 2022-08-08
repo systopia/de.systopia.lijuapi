@@ -411,7 +411,7 @@ class CRM_Lijuapi_Utils {
     $result = civicrm_api3('Group', 'get', [
       'id' => $civi_group_id,
     ]);
-    if ($result != 1) {
+    if ($result['count'] != 1) {
       throw new API_Exception("Group Not found, invalid group ID {$civi_group_id}");
     }
     foreach ($result['values'] as $value) {
