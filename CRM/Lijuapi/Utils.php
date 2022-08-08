@@ -402,4 +402,28 @@ class CRM_Lijuapi_Utils {
     }
   }
 
+  public static function get_group_name($civi_group_id) {
+    $result = civicrm_api3('Group', 'get', [
+      'id' => $civi_group_id,
+    ]);
+    if ($result != 1) {
+      throw new API_Exception("Group Not found, invalid group ID {$civi_group_id}");
+    }
+    foreach ($result['values'] as $value) {
+      return $value['name'];
+    }
+  }
+
+  /**
+   * @param $message
+   * @param $loglevel
+   * @return void
+   *
+   */
+  public static function log($message, $loglevel = "DEBUG") {
+    if (self::$debug) {
+      Civi::log()->log($loglevel, "[de.systopia.lijuapi] " . $message);
+    }
+  }
+
 }

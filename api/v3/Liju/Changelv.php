@@ -28,6 +28,7 @@ function _civicrm_api3_liju_Changelv_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_liju_Changelv($params) {
+  CRM_Lijuapi_Utils::log("Liju.changelv " . json_encode($params));
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();
     $api_interface->change_lv($params['liju_member_id'], $params['email'], $params['new_lv']);
