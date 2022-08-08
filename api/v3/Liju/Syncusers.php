@@ -29,6 +29,7 @@ function civicrm_api3_liju_Syncusers($params) {
   try {
     $user_sync = new CRM_Lijuapi_SyncUsers();
     $user_sync->run();
+    return civicrm_api3_create_success("Liju API Member sync finished");
   } catch(Exception $e) {
     throw new API_Exception("Error Occured: {$e->getMessage()}");
   }
