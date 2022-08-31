@@ -26,6 +26,7 @@ function _civicrm_api3_liju_Getusers_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_liju_Getusers($params) {
+  CRM_Lijuapi_Utils::log("Liju.getUsers " . json_encode($params));
   try {
 
     // local tests

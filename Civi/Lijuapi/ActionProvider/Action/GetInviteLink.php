@@ -52,6 +52,7 @@ class GetInviteLink extends AbstractAction
       // required fields
       new Specification('contact_id', 'Integer', E::ts('Contact ID'), true),
       new Specification('email', 'String', E::ts('Email Address'), true),
+      new Specification('group_id', 'Integer', E::ts('Landesverband Group ID'), true),
     ]);
   }
 
@@ -85,7 +86,9 @@ class GetInviteLink extends AbstractAction
     try {
       $contact_id = $parameters->getParameter('contact_id');
       // get Landesverband for User
-      $landesverband = \CRM_Lijuapi_Utils::get_lv($contact_id);
+//      $landesverband =  \CRM_Lijuapi_Utils::get_lv($contact_id);
+      $lv_group_id = $parameters->getParameter('group_id');
+      $landesverband =  \CRM_Lijuapi_Utils::get_lv_from_group_id($lv_group_id);
       $email = $parameters->getParameter('email');
       // get link for User
       $result = civicrm_api3('Liju', 'createinvite', [

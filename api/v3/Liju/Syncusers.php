@@ -26,9 +26,11 @@ function _civicrm_api3_liju_Syncusers_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_liju_Syncusers($params) {
+  CRM_Lijuapi_Utils::log("Liju.syncusers " . json_encode($params));
   try {
     $user_sync = new CRM_Lijuapi_SyncUsers();
     $user_sync->run();
+    return civicrm_api3_create_success("Liju API Member sync finished");
   } catch(Exception $e) {
     throw new API_Exception("Error Occured: {$e->getMessage()}");
   }
