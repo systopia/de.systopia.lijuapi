@@ -67,9 +67,6 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
       ),
     ));
 
-    Civi::log()->log("INFO", "HELLO THERE.");
-    error_log("test");
-
     // set default values
     $this->setDefaults($current_values);
 
