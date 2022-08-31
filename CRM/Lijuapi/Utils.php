@@ -98,6 +98,9 @@ class CRM_Lijuapi_Utils {
     return self::$singleton;
   }
 
+  public static function get_lv_mapping() {
+    return self::$landesverband_mapping;
+  }
 
   /**
    * @param $contact_id
@@ -193,6 +196,7 @@ class CRM_Lijuapi_Utils {
    * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
    */
   public static function add_link_to_user($contact_id, $invite_link){
+    CRM_Lijuapi_Utils::log("Adding invite Link to user {$contact_id}");
     $custom_field = self::get_custom_invite_field();
     $result = civicrm_api3('Contact', 'create', [
       'id' => $contact_id,
@@ -429,6 +433,33 @@ class CRM_Lijuapi_Utils {
     if (self::$debug) {
       Civi::log()->log($loglevel, "[de.systopia.lijuapi] " . $message);
     }
+  }
+
+  /**
+   * @param $contact_id
+   * @return array
+   * @throws CiviCRM_API3_Exception|CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException
+   */
+  public static function get_user_primary_email($contact_id, $email_only = FALSE) {
+    $result = civicrm_api3('Email', 'get', [
+      'sequential' => 1,
+      'contact_id' => $contact_id,
+      'is_primary' => 1
+    ]);
+    if ($result['count'] != 1 ){
+      throw new CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException("Found {$result['count']} Email Results for User {$contact_id}");
+    }
+    $return_values = [];
+    foreach ($result['values'] as $email_result) {
+      if ($email_only) {
+        return $email_result['email'];
+      }
+      $return_values = [
+        'email' => $email_result['email'],
+        'id' => $email_result['id'],
+      ];
+    }
+    return $return_values;
   }
 
 }
