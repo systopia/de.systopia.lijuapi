@@ -45,7 +45,10 @@ class CRM_Lijuapi_SyncUserInvites {
 
   /**
    * Runner function for API job
+   *
    * @return int
+   * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
+   * @throws CiviCRM_API3_Exception
    */
   public function run() {
     try {
@@ -65,7 +68,6 @@ class CRM_Lijuapi_SyncUserInvites {
    * @return void
    * @throws CRM_Lijuapi_Exceptions_CreateInviteCounterExpiredException
    * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
-   * @throws CRM_Lijuapi_Exceptions_SaveInviteLinkToContactException
    * @throws CiviCRM_API3_Exception
    */
   private function get_links_for_group($group_id, $lv) {

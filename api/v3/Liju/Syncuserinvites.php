@@ -40,6 +40,8 @@ function civicrm_api3_liju_Syncuserinvites($params) {
     $user_invite_count = $sync_user_invites->run();
   } catch(CRM_Lijuapi_Exceptions_GroupIdNotLandesverbandException $e) {
     throw new API_Exception("Invalid Group ID {$group_id}. Given Group is not a LandesVerband.");
+  } catch (CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException $e){
+    throw new API_Exception("No Custom Field Available for Invite Links. Please create and configure a valid field.");
   } catch (Exception $e) {
     $user_invite_count = $sync_user_invites->get_current_count();
     throw new API_Exception("Error Occured: {$e->getMessage()}. Created {$user_invite_count} invite Links");
