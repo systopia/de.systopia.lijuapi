@@ -52,7 +52,7 @@ class CRM_Lijuapi_Mailer {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  public function send_error_mail($contact_id, $contact_email, $landesverband, $error_message, $group_id = NULL ) {
+  public function send_error_mail($contact_email, $landesverband, $error_message, $group_id = NULL, $contact_id = NULL ) {
     $smarty_variables = [
       'contact_id' => $contact_id,
       'contact_email'   => $contact_email,
@@ -71,7 +71,7 @@ class CRM_Lijuapi_Mailer {
     $values['template_params'] = $smarty_variables;
     $result = civicrm_api3('MessageTemplate', 'send', $values);
     if ($result['is_error'] == 1) {
-      throw new CRM_Lijuapi_Exceptions_EmailSendingErrorException("Error Sending Email Tempalte. " . $result['error_message']);
+      throw new CRM_Lijuapi_Exceptions_EmailSendingErrorException("Error Sending Email Template. " . $result['error_message']);
     }
   }
 

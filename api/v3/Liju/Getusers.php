@@ -28,22 +28,12 @@ function _civicrm_api3_liju_Getusers_spec(&$spec) {
 function civicrm_api3_liju_Getusers($params) {
   CRM_Lijuapi_Utils::log("Liju.getUsers " . json_encode($params));
   try {
-
-    // local tests
-//    $fields = ['contact_id', 'email', 'email_id', 'landesverband', 'group_id'];
-//    $values = [
-//      'contact_id' => 202,
-//      'email' => 'admin@example.de',
-//      'email_id' => 193,
-//      'landesverband' => 'BB',
-//      'group_id' => 1
-//    ];
-//    CRM_Lijuapi_Utils::set_error_case($values);
-//    return;
     $api_interface = new CRM_Lijuapi_ApiInterface();
     $liju_users = $api_interface->get_users();
     return civicrm_api3_create_success(["liju_api_users" => $liju_users]);
   } catch (Exception $e) {
-    throw new API_Exception("Error Occured: {$e->getMessage()}",'12345');
+    // TODO: Do we need to notify here as well?
+    CRM_Lijuapi_Utils::notify_error("Error occured in Liju.getUsers: " . $e->getMessage(), NULL, NULL, NULL);
+    throw new API_Exception("Error Occured: {$e->getMessage()}");
   }
 }
