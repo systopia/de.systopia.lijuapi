@@ -1,9 +1,5 @@
 <h2>Fehler an der Linksjugend API {$timestamp}</h2>
 
-<h2>
-  Kontakt: {$contact_display_name}
-</h2>
-
 <p>
   Kontakt ID: {$contact_id}</br>
   Email: {$contact_email}</br>
