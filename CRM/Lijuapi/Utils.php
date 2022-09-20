@@ -295,7 +295,7 @@ class CRM_Lijuapi_Utils {
       $contact_id = CRM_Lijuapi_Utils::get_user_id($contact_email);
     }
     $mailer = new CRM_Lijuapi_Mailer();
-    $mailer->send_error_mail($contact_id, $contact_email, $landesverband, $error_message);
+    $mailer->send_error_mail($contact_email, $landesverband, $error_message, $contact_id);
   }
 
 
