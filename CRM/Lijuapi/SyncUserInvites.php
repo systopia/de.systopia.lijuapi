@@ -58,6 +58,10 @@ class CRM_Lijuapi_SyncUserInvites {
     } catch (CRM_Lijuapi_Exceptions_CreateInviteCounterExpiredException $e) {
       // Counter expired we are done
       return $this->current_counter;
+    } catch (Exception $e) {
+      // we have a general Exception, but don't want to interrupt the process.
+      // Log the incident with ERROR Tag and continue.
+      CRM_Lijuapi_Utils::log("ERROR occured creating an invite link. Error Message: " . $e->getMessage());
     }
     return $this->current_counter;
   }
