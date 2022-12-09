@@ -51,17 +51,13 @@ class CRM_Lijuapi_SyncUserInvites {
    * @throws CiviCRM_API3_Exception
    */
   public function run() {
-    foreach ($this->groups as $lv => $group_id ) {
-      try {
-        $this->get_links_for_group($group_id, $lv);
-      } catch (CRM_Lijuapi_Exceptions_CreateInviteCounterExpiredException $e) {
-        // Counter expired we are done
-        return $this->current_counter;
-      } catch (Exception $e) {
-        // we have a general Exception, but don't want to interrupt the process.
-        // Log the incident with ERROR Tag and continue.
-        CRM_Lijuapi_Utils::log("ERROR occured creating an invite link. Error Message: " . $e->getMessage(), "ERROR");
+    try {
+      foreach ($this->groups as $lv => $group_id ) {
+          $this->get_links_for_group($group_id, $lv);
       }
+    } catch (CRM_Lijuapi_Exceptions_CreateInviteCounterExpiredException $e) {
+      // Counter expired we are done
+      return $this->current_counter;
     }
     return $this->current_counter;
   }
@@ -100,6 +96,9 @@ class CRM_Lijuapi_SyncUserInvites {
         CRM_Lijuapi_Utils::log("Member ({$contact_id}) doesn't have an email address. Cannot create invite Link");
       } catch(CRM_Lijuapi_Exceptions_SaveInviteLinkToContactException $e) {
         CRM_Lijuapi_Utils::log("Failed to save Link to member ({$contact_id}). Error Message: " . $e->getMessage());
+      } catch (Exception $e) {
+        // generic error handling. We want this process to continue anyways
+        CRM_Lijuapi_Utils::log("Error creating Link for member ({$contact_id}). Error Message: " . $e->getMessage(), "ERROR");
       }
     }
   }
