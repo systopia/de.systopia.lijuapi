@@ -81,7 +81,7 @@ class CRM_Lijuapi_SyncUsers {
             CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
           } else {
             // only for debugging
-            CRM_Lijuapi_Utils::log("User is not available in LiJu API");
+            CRM_Lijuapi_Utils::log("User ({$contact_id}) is not available in LiJu API but already has an invite Link");
           }
           continue;
         }
