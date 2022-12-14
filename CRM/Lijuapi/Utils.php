@@ -218,7 +218,7 @@ class CRM_Lijuapi_Utils {
   public static function remove_invite_link_from_user($contact_id) {
     $custom_field = self::get_custom_invite_field();
     $result = civicrm_api3('Contact', 'create', [
-      'id' => 202,
+      'id' => $contact_id,
       $custom_field => "",
     ]);
     if ($result['is_error'] != 0) {
