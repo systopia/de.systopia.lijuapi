@@ -39,10 +39,21 @@ class CRM_Lijuapi_SyncUsers {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  public function run() {
+  public function run($group_id = NULL) {
     CRM_Lijuapi_Utils::log("Syncing CiviCRMUsers to LijuApi Users");
+    // filter for certain LV Groups
+    $lv_groups = CRM_Lijuapi_Utils::$landesverband_mapping;
+    if (!empty($group_id)) {
+      foreach (CRM_Lijuapi_Utils::$landesverband_mapping as $lv => $civi_group_id) {
+        // we add only the filtered group ID to the LV array
+        if ($group_id == $civi_group_id) {
+          $lv_groups = [];
+          $lv_groups[$lv] = $civi_group_id;
+        }
+      }
+    }
     // Iterate Users from  per group!
-    foreach (CRM_Lijuapi_Utils::$landesverband_mapping as $lv => $civi_group_id) {
+    foreach ($lv_groups as $lv => $civi_group_id) {
       $group_name = CRM_Lijuapi_Utils::get_group_name($civi_group_id);
       CRM_Lijuapi_Utils::log("Getting users for {$group_name}");
       $result = civicrm_api3('GroupContact', 'get', [
@@ -100,11 +111,11 @@ class CRM_Lijuapi_SyncUsers {
           Civi::log()->log("ERROR", " Error syncing contact {$contact_id}. {$e->getMessage()}");
           // TODO Email notification here? More/different Error handling needed?
         }
-        $debug_counter +=1;
-        if ($debug_counter > 20) {
-          CRM_Lijuapi_Utils::log("Finished debugging run");
-          return;
-        }
+//        $debug_counter +=1;
+//        if ($debug_counter > 20) {
+//          CRM_Lijuapi_Utils::log("Finished debugging run");
+//          return;
+//        }
       }
     }
   }
