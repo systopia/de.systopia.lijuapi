@@ -34,6 +34,7 @@ function civicrm_api3_liju_Createinvite($params) {
     $invite_link = $api_interface->get_invite_link($params['email'], $params['liju_member_id'], $params['verband']);
     return civicrm_api3_create_success(["invite_link" => $invite_link]);
   } catch (Exception $e) {
+    CRM_Lijuapi_Utils::notify_error("Error occured in Liju.createinvite: " . $e->getMessage(), $params['email'], $params['verband'], $params['liju_member_id']);
     throw new API_Exception($e->getMessage());
   }
 }

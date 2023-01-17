@@ -126,7 +126,7 @@ class GetInviteLink extends AbstractAction
    * @throws \CRM_Lijuapi_Exceptions_MissingErrorValueException
    * @throws \CiviCRM_API3_Exception
    */
-  private function generate_error_report($contact_id, $email, $landesverband, $error_message) {
+  private function generate_error_report($email, $landesverband, $error_message, $contact_id) {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
       'email' => $email,
@@ -143,7 +143,7 @@ class GetInviteLink extends AbstractAction
     // only send notification if configured
     if ($config->getSetting('notification_email_active')) {
       $mailer = new \CRM_Lijuapi_Mailer();
-      $mailer->send_error_mail($contact_id, $email, $landesverband, $error_message);
+      $mailer->send_error_mail($email, $landesverband, $error_message, $contact_id);
     }
   }
 }

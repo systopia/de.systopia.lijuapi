@@ -25,6 +25,7 @@ class CRM_Lijuapi_Config {
 
   /**
    * Mapping groups_id => Group Name for country memberships
+   * DERECATED - this isn't used. CRM_Lijuapi_Utils::landesverband_mapping is instead utilized
    * @var string[]
    */
   public static $LV_group_mapping = [

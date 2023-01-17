@@ -39,10 +39,21 @@ class CRM_Lijuapi_SyncUsers {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  public function run() {
+  public function run($group_id = NULL) {
     CRM_Lijuapi_Utils::log("Syncing CiviCRMUsers to LijuApi Users");
+    // filter for certain LV Groups
+    $lv_groups = CRM_Lijuapi_Utils::$landesverband_mapping;
+    if (!empty($group_id)) {
+      foreach (CRM_Lijuapi_Utils::$landesverband_mapping as $lv => $civi_group_id) {
+        // we add only the filtered group ID to the LV array
+        if ($group_id == $civi_group_id) {
+          $lv_groups = [];
+          $lv_groups[$lv] = $civi_group_id;
+        }
+      }
+    }
     // Iterate Users from  per group!
-    foreach (CRM_Lijuapi_Utils::$landesverband_mapping as $lv => $civi_group_id) {
+    foreach ($lv_groups as $lv => $civi_group_id) {
       $group_name = CRM_Lijuapi_Utils::get_group_name($civi_group_id);
       CRM_Lijuapi_Utils::log("Getting users for {$group_name}");
       $result = civicrm_api3('GroupContact', 'get', [
@@ -57,7 +68,7 @@ class CRM_Lijuapi_SyncUsers {
       foreach ($result['values'] as $civi_group_info) {
         try {
         $contact_id = $civi_group_info['contact_id'];
-        $civi_user_email = $this->get_user_email($contact_id);
+        $civi_user_email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id);
         $user_record = $this->get_liju_user_by_civi_mail($civi_user_email);
         if (empty($user_record)) {
           // create Link and save it to user if no Link is available already
@@ -67,11 +78,10 @@ class CRM_Lijuapi_SyncUsers {
               'liju_member_id' => $contact_id,
               'verband' => $lv,
             ]);
-            CRM_Lijuapi_Utils::log("Adding invite Link to user {$contact_id}");
             CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
           } else {
             // only for debugging
-            CRM_Lijuapi_Utils::log("User is not available in LiJu API");
+            CRM_Lijuapi_Utils::log("User ({$contact_id}) is not available in LiJu API but already has an invite Link");
           }
           continue;
         }
@@ -101,11 +111,11 @@ class CRM_Lijuapi_SyncUsers {
           Civi::log()->log("ERROR", " Error syncing contact {$contact_id}. {$e->getMessage()}");
           // TODO Email notification here? More/different Error handling needed?
         }
-        $debug_counter +=1;
-        if ($debug_counter > 20) {
-          CRM_Lijuapi_Utils::log("Finished debugging run");
-          return;
-        }
+//        $debug_counter +=1;
+//        if ($debug_counter > 20) {
+//          CRM_Lijuapi_Utils::log("Finished debugging run");
+//          return;
+//        }
       }
     }
   }
@@ -129,29 +139,7 @@ class CRM_Lijuapi_SyncUsers {
     throw new CRM_Lijuapi_Exceptions_NoEmailForMemberException("User doesn't have an primary Email! o_O");
   }
 
-  /**
-   * @param $contact_id
-   * @return array
-   * @throws CiviCRM_API3_Exception|CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException
-   */
-  private function get_user_email($contact_id) {
-    $result = civicrm_api3('Email', 'get', [
-      'sequential' => 1,
-      'contact_id' => $contact_id,
-      'is_primary' => 1
-    ]);
-    if ($result['count'] != 1 ){
-      throw new CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException("Found {$result['count']} Email Results for User {$contact_id}");
-    }
-    $return_values = [];
-    foreach ($result['values'] as $email_result) {
-      $return_values = [
-        'email' => $email_result['email'],
-        'id' => $email_result['id'],
-      ];
-    }
-    return $return_values;
-  }
+
 
   /**
    * Search cached liju members for a match to one of the provided user emails
