@@ -18,46 +18,12 @@ use CRM_Lijuapi_ExtensionUtil as E;
 
 class CRM_Lijuapi_Utils {
 
-  // SELECT id, name, description FROM civicrm_group WHERE name LIKE "%Mitglied%";
-//| 160 | Baden_Wuerttemberg_Mitglieder_160   | Baden-Württemberg Mitglieder                         |
-//| 161 | Bayern_Mitglieder_161               | Bayern Mitglieder                                    |
-//| 162 | Berlin_Mitglieder_162               | Berlin Mitglieder                                    |
-//| 163 | Brandenburg_Mitglieder_163          | Brandenburg Mitglieder                               |
-//| 164 | Bremen_Mitglieder_164               | Bremen Mitglieder                                    |
-//| 165 | Hamburg_Mitglieder_165              | Hamburg Mitglieder                                   |
-//| 166 | Hessen_Mitglieder_166               | Hessen Mitglieder                                    |
-//| 167 | Mecklenburg_Vorpommern_Mitglied_167 | Mecklenburg-Vorpommern Mitglieder                    |
-//| 168 | Niedersachsen_Mitglieder_168        | Niedersachsen Mitglieder                             |
-//| 169 | Nordrhein_Westfalen_Mitglieder_169  | Nordrhein-Westfalen Mitglieder                       |
-//| 170 | Rheinland_Pfalz_Mitglieder_170      | Rheinland-Pfalz Mitglieder                           |
-//| 171 | Saarland_Mitglieder_171             | Saarland Mitglieder                                  |
-//| 172 | Sachsen_Mitglieder_172              | Sachsen Mitglieder                                   |
-//| 173 | Sachsen_Anhalt_Mitglieder_173       | Sachsen-Anhalt Mitglieder                            |
-//| 174 | Schleswig_Holstein_Mitglieder_174   | Schleswig-Holstein Mitglieder                        |
-//| 175 | Thueringen_Mitglieder_175           | Thüringen Mitglieder                                 |
+// SELECT id, name, description FROM civicrm_group WHERE name LIKE "%Mitglied%";
 // Abbrevation after
 // https://www.datenportal.bmbf.de/portal/de/G122.html#:~:text=SN%20%3D%20Sachsen%3B,TH%20%3D%20Th%C3%BCringen.
 // Mapping 2 letter abbrevation to civicrm_group_id
-//  public static $landesverband_mapping = [
-//    'BW' => 160, // Baden_Wuerttemberg_Mitglieder_160
-//    'BY' => 161, // Bayern_Mitglieder_161
-//    'BE' => 162, // Berlin_Mitglieder_162
-//    'BB' => 163, // Brandenburg_Mitglieder_163
-//    'HB' => 164, // Bremen_Mitglieder_164
-//    'HH' => 165, // Hamburg_Mitglieder_165
-//    'HE' => 166, // Hessen_Mitglieder_166
-//    'MV' => 167, // Mecklenburg_Vorpommern_Mitglied_167
-//    'NI' => 168, // Niedersachsen_Mitglieder_168
-//    'NW' => 169, // Nordrhein_Westfalen_Mitglieder_169
-//    'RP' => 170, // Rheinland_Pfalz_Mitglieder_170
-//    'SL' => 171, // Saarland_Mitglieder_171
-//    'SN' => 172, // Sachsen_Mitglieder_172
-//    'ST' => 173, // Sachsen_Anhalt_Mitglieder_173
-//    'SH' => 174, // Schleswig_Holstein_Mitglieder_174
-//    'TH' => 175, // Thueringen_Mitglieder_175
-//  ];
 
-// DEV
+// DEV + PRO, mapping is the same actually
   public static $landesverband_mapping = [
     'BW' => 18, // Baden_Wuerttemberg_Mitglieder_18
     'BY' => 19, // Bayern_Mitglieder_19
