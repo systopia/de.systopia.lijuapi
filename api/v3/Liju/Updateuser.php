@@ -1,4 +1,5 @@
 <?php
+
 use CRM_Lijuapi_ExtensionUtil as E;
 
 /**
@@ -9,7 +10,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/api-architecture/
  */
-function _civicrm_api3_liju_Updateuser_spec(&$spec) {
+function _civicrm_api3_liju_Updateuser_spec(&$spec)
+{
   $spec['liju_member_id']['api.required'] = 1;
   $spec['email']['api.required'] = 0;
   $spec['verband']['api.required'] = 0;
@@ -30,7 +32,8 @@ function _civicrm_api3_liju_Updateuser_spec(&$spec) {
  * @see civicrm_api3_create_success
  *
  */
-function civicrm_api3_liju_Updateuser($params) {
+function civicrm_api3_liju_Updateuser($params)
+{
   try {
     CRM_Lijuapi_Utils::log("Liju.updateuser " . json_encode($params));
     $api_interface = new CRM_Lijuapi_ApiInterface();

@@ -1,4 +1,5 @@
 <?php
+
 use CRM_Lijuapi_ExtensionUtil as E;
 
 /**
@@ -9,7 +10,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/api-architecture/
  */
-function _civicrm_api3_liju_error_handler_create_spec(&$spec) {
+function _civicrm_api3_liju_error_handler_create_spec(&$spec)
+{
   // $spec['some_parameter']['api.required'] = 1;
 }
 
@@ -23,7 +25,8 @@ function _civicrm_api3_liju_error_handler_create_spec(&$spec) {
  *
  * @throws API_Exception
  */
-function civicrm_api3_liju_error_handler_create($params) {
+function civicrm_api3_liju_error_handler_create($params)
+{
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params, 'LijuErrorHandler');
 }
 
@@ -37,7 +40,8 @@ function civicrm_api3_liju_error_handler_create($params) {
  *
  * @throws API_Exception
  */
-function civicrm_api3_liju_error_handler_delete($params) {
+function civicrm_api3_liju_error_handler_delete($params)
+{
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
@@ -51,6 +55,7 @@ function civicrm_api3_liju_error_handler_delete($params) {
  *
  * @throws API_Exception
  */
-function civicrm_api3_liju_error_handler_get($params) {
+function civicrm_api3_liju_error_handler_get($params)
+{
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, TRUE, 'LijuErrorHandler');
 }

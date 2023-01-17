@@ -21,7 +21,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
  * Or sync all users.
  * Alternatively a number oof links can be specified as well.
  */
-class CRM_Lijuapi_SyncUserInvites {
+class CRM_Lijuapi_SyncUserInvites
+{
 
   private $groups;
   private $user_count;
@@ -32,7 +33,8 @@ class CRM_Lijuapi_SyncUserInvites {
    * @param $count
    * @throws CRM_Lijuapi_Exceptions_GroupIdNotLandesverbandException
    */
-  public function __construct($group_id = NULL, $count = NULL) {
+  public function __construct($group_id = NULL, $count = NULL)
+  {
     if (!empty($group_id)) {
       $lv = CRM_Lijuapi_Utils::get_lv_from_group_id($group_id);
       $this->groups[$lv] = $group_id;
@@ -50,10 +52,11 @@ class CRM_Lijuapi_SyncUserInvites {
    * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
    * @throws CiviCRM_API3_Exception
    */
-  public function run() {
+  public function run()
+  {
     try {
-      foreach ($this->groups as $lv => $group_id ) {
-          $this->get_links_for_group($group_id, $lv);
+      foreach ($this->groups as $lv => $group_id) {
+        $this->get_links_for_group($group_id, $lv);
       }
     } catch (CRM_Lijuapi_Exceptions_CreateInviteCounterExpiredException $e) {
       // Counter expired we are done
@@ -70,7 +73,8 @@ class CRM_Lijuapi_SyncUserInvites {
    * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
    * @throws CiviCRM_API3_Exception
    */
-  private function get_links_for_group($group_id, $lv) {
+  private function get_links_for_group($group_id, $lv)
+  {
     $result = civicrm_api3('GroupContact', 'get', [
       'sequential' => 1,
       'return' => ["contact_id"],
@@ -92,9 +96,9 @@ class CRM_Lijuapi_SyncUserInvites {
 
         CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
         $this->counter_limit_reached();
-      } catch(CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException $e) {
+      } catch (CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException $e) {
         CRM_Lijuapi_Utils::log("Member ({$contact_id}) doesn't have an email address. Cannot create invite Link");
-      } catch(CRM_Lijuapi_Exceptions_SaveInviteLinkToContactException $e) {
+      } catch (CRM_Lijuapi_Exceptions_SaveInviteLinkToContactException $e) {
         CRM_Lijuapi_Utils::log("Failed to save Link to member ({$contact_id}). Error Message: " . $e->getMessage());
       } catch (Exception $e) {
         // generic error handling. We want this process to continue anyways
@@ -107,7 +111,8 @@ class CRM_Lijuapi_SyncUserInvites {
   /**
    * @return int
    */
-  public function get_current_count() {
+  public function get_current_count()
+  {
     return $this->current_counter;
   }
 
@@ -116,7 +121,8 @@ class CRM_Lijuapi_SyncUserInvites {
    * @return void
    * @throws CRM_Lijuapi_Exceptions_CreateInviteCounterExpiredException
    */
-  private function counter_limit_reached() {
+  private function counter_limit_reached()
+  {
     if (empty($this->user_count)) {
       return;
     }

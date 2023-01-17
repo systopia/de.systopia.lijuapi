@@ -6,7 +6,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
 /**
  * Base class which provides helpers to execute upgrade logic
  */
-class CRM_Lijuapi_Upgrader_Base {
+class CRM_Lijuapi_Upgrader_Base
+{
 
   /**
    * @var CRM_Lijuapi_Upgrader_Base
@@ -45,7 +46,8 @@ class CRM_Lijuapi_Upgrader_Base {
   /**
    * Obtain a reference to the active upgrade handler.
    */
-  public static function instance() {
+  public static function instance()
+  {
     if (!self::$instance) {
       self::$instance = new CRM_Lijuapi_Upgrader(
         'de.systopia.lijuapi',
@@ -65,7 +67,8 @@ class CRM_Lijuapi_Upgrader_Base {
    * CRM_Lijuapi_Upgrader_Base::_queueAdapter($ctx, 'methodName', 'arg1', 'arg2');
    * ```
    */
-  public static function _queueAdapter() {
+  public static function _queueAdapter()
+  {
     $instance = self::instance();
     $args = func_get_args();
     $instance->ctx = array_shift($args);
@@ -80,7 +83,8 @@ class CRM_Lijuapi_Upgrader_Base {
    * @param $extensionName
    * @param $extensionDir
    */
-  public function __construct($extensionName, $extensionDir) {
+  public function __construct($extensionName, $extensionDir)
+  {
     $this->extensionName = $extensionName;
     $this->extensionDir = $extensionDir;
   }
@@ -94,7 +98,8 @@ class CRM_Lijuapi_Upgrader_Base {
    *   the CustomData XML file path (relative to this extension's dir)
    * @return bool
    */
-  public function executeCustomDataFile($relativePath) {
+  public function executeCustomDataFile($relativePath)
+  {
     $xml_file = $this->extensionDir . '/' . $relativePath;
     return $this->executeCustomDataFileByAbsPath($xml_file);
   }
@@ -107,7 +112,8 @@ class CRM_Lijuapi_Upgrader_Base {
    *
    * @return bool
    */
-  protected function executeCustomDataFileByAbsPath($xml_file) {
+  protected function executeCustomDataFileByAbsPath($xml_file)
+  {
     $import = new CRM_Utils_Migrate_Import();
     $import->run($xml_file);
     return TRUE;
@@ -121,7 +127,8 @@ class CRM_Lijuapi_Upgrader_Base {
    *
    * @return bool
    */
-  public function executeSqlFile($relativePath) {
+  public function executeSqlFile($relativePath)
+  {
     CRM_Utils_File::sourceSQLFile(
       CIVICRM_DSN,
       $this->extensionDir . DIRECTORY_SEPARATOR . $relativePath
@@ -139,7 +146,8 @@ class CRM_Lijuapi_Upgrader_Base {
    * @return bool
    * @throws \CRM_Core_Exception
    */
-  public function executeSqlTemplate($tplFile) {
+  public function executeSqlTemplate($tplFile)
+  {
     // Assign multilingual variable to Smarty.
     $upgrade = new CRM_Upgrade_Form();
 
@@ -161,7 +169,8 @@ class CRM_Lijuapi_Upgrader_Base {
    *
    * @return bool
    */
-  public function executeSql($query, $params = []) {
+  public function executeSql($query, $params = [])
+  {
     // FIXME verify that we raise an exception on error
     CRM_Core_DAO::executeQuery($query, $params);
     return TRUE;
@@ -176,7 +185,8 @@ class CRM_Lijuapi_Upgrader_Base {
    * After passing the $funcName, you can also pass parameters that will go to
    * the function. Note that all params must be serializable.
    */
-  public function addTask($title) {
+  public function addTask($title)
+  {
     $args = func_get_args();
     $title = array_shift($args);
     $task = new CRM_Queue_Task(
@@ -194,7 +204,8 @@ class CRM_Lijuapi_Upgrader_Base {
    *
    * @return bool
    */
-  public function hasPendingRevisions() {
+  public function hasPendingRevisions()
+  {
     $revisions = $this->getRevisions();
     $currentRevision = $this->getCurrentRevision();
 
@@ -213,7 +224,8 @@ class CRM_Lijuapi_Upgrader_Base {
    *
    * @param CRM_Queue_Queue $queue
    */
-  public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
+  public function enqueuePendingRevisions(CRM_Queue_Queue $queue)
+  {
     $this->queue = $queue;
 
     $currentRevision = $this->getCurrentRevision();
@@ -249,7 +261,8 @@ class CRM_Lijuapi_Upgrader_Base {
    * @return array
    *   revisionNumbers sorted numerically
    */
-  public function getRevisions() {
+  public function getRevisions()
+  {
     if (!is_array($this->revisions)) {
       $this->revisions = [];
 
@@ -266,7 +279,8 @@ class CRM_Lijuapi_Upgrader_Base {
     return $this->revisions;
   }
 
-  public function getCurrentRevision() {
+  public function getCurrentRevision()
+  {
     $revision = CRM_Core_BAO_Extension::getSchemaVersion($this->extensionName);
     if (!$revision) {
       $revision = $this->getCurrentRevisionDeprecated();
@@ -274,7 +288,8 @@ class CRM_Lijuapi_Upgrader_Base {
     return $revision;
   }
 
-  private function getCurrentRevisionDeprecated() {
+  private function getCurrentRevisionDeprecated()
+  {
     $key = $this->extensionName . ':version';
     if ($revision = \Civi::settings()->get($key)) {
       $this->revisionStorageIsDeprecated = TRUE;
@@ -282,14 +297,16 @@ class CRM_Lijuapi_Upgrader_Base {
     return $revision;
   }
 
-  public function setCurrentRevision($revision) {
+  public function setCurrentRevision($revision)
+  {
     CRM_Core_BAO_Extension::setSchemaVersion($this->extensionName, $revision);
     // clean up legacy schema version store (CRM-19252)
     $this->deleteDeprecatedRevision();
     return TRUE;
   }
 
-  private function deleteDeprecatedRevision() {
+  private function deleteDeprecatedRevision()
+  {
     if ($this->revisionStorageIsDeprecated) {
       $setting = new CRM_Core_BAO_Setting();
       $setting->name = $this->extensionName . ':version';
@@ -303,7 +320,8 @@ class CRM_Lijuapi_Upgrader_Base {
   /**
    * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
    */
-  public function onInstall() {
+  public function onInstall()
+  {
     $files = glob($this->extensionDir . '/sql/*_install.sql');
     if (is_array($files)) {
       foreach ($files as $file) {
@@ -330,7 +348,8 @@ class CRM_Lijuapi_Upgrader_Base {
   /**
    * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
    */
-  public function onPostInstall() {
+  public function onPostInstall()
+  {
     $revisions = $this->getRevisions();
     if (!empty($revisions)) {
       $this->setCurrentRevision(max($revisions));
@@ -343,7 +362,8 @@ class CRM_Lijuapi_Upgrader_Base {
   /**
    * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
    */
-  public function onUninstall() {
+  public function onUninstall()
+  {
     $files = glob($this->extensionDir . '/sql/*_uninstall.mysql.tpl');
     if (is_array($files)) {
       foreach ($files as $file) {
@@ -364,7 +384,8 @@ class CRM_Lijuapi_Upgrader_Base {
   /**
    * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
    */
-  public function onEnable() {
+  public function onEnable()
+  {
     // stub for possible future use
     if (is_callable([$this, 'enable'])) {
       $this->enable();
@@ -374,14 +395,16 @@ class CRM_Lijuapi_Upgrader_Base {
   /**
    * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
    */
-  public function onDisable() {
+  public function onDisable()
+  {
     // stub for possible future use
     if (is_callable([$this, 'disable'])) {
       $this->disable();
     }
   }
 
-  public function onUpgrade($op, CRM_Queue_Queue $queue = NULL) {
+  public function onUpgrade($op, CRM_Queue_Queue $queue = NULL)
+  {
     switch ($op) {
       case 'check':
         return [$this->hasPendingRevisions()];

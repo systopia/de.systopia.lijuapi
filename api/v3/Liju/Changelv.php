@@ -1,4 +1,5 @@
 <?php
+
 use CRM_Lijuapi_ExtensionUtil as E;
 
 /**
@@ -9,7 +10,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/api-architecture/
  */
-function _civicrm_api3_liju_Changelv_spec(&$spec) {
+function _civicrm_api3_liju_Changelv_spec(&$spec)
+{
   $spec['email']['api.required'] = 1;
   $spec['liju_member_id']['api.required'] = 1;
   $spec['new_lv']['api.required'] = 1;
@@ -23,11 +25,12 @@ function _civicrm_api3_liju_Changelv_spec(&$spec) {
  * @return array
  *   API result descriptor
  *
+ * @throws API_Exception
  * @see civicrm_api3_create_success
  *
- * @throws API_Exception
  */
-function civicrm_api3_liju_Changelv($params) {
+function civicrm_api3_liju_Changelv($params)
+{
   CRM_Lijuapi_Utils::log("Liju.changelv " . json_encode($params));
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();

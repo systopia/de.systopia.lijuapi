@@ -18,10 +18,11 @@ use CRM_Lijuapi_ExtensionUtil as E;
 /**
  * Configurations
  */
-class CRM_Lijuapi_Config {
+class CRM_Lijuapi_Config
+{
 
   private static $singleton = NULL;
-  private static $settings  = NULL;
+  private static $settings = NULL;
 
   /**
    * Mapping groups_id => Group Name for country memberships
@@ -49,10 +50,12 @@ class CRM_Lijuapi_Config {
 
 
   protected $jobs = NULL;
+
   /**
    * get the config instance
    */
-  public static function singleton() {
+  public static function singleton()
+  {
     if (self::$singleton === NULL) {
       self::$singleton = new CRM_Lijuapi_Config();
     }
@@ -66,7 +69,8 @@ class CRM_Lijuapi_Config {
    * @param $default_value mixed  default value
    * @return mixed setting
    */
-  public function getSetting($name, $default_value = NULL) {
+  public function getSetting($name, $default_value = NULL)
+  {
     $settings = self::getSettings();
     return CRM_Utils_Array::value($name, $settings, $default_value);
   }
@@ -76,7 +80,8 @@ class CRM_Lijuapi_Config {
    *
    * @return array
    */
-  public function getSettings() {
+  public function getSettings()
+  {
     if (self::$settings === NULL) {
       self::$settings = CRM_Core_BAO_Setting::getItem('de.systopia.Lijuapi', 'Liju_Api');
     }
@@ -89,7 +94,8 @@ class CRM_Lijuapi_Config {
    *
    * @param $settings array
    */
-  public function setSettings($settings) {
+  public function setSettings($settings)
+  {
     self::$settings = $settings;
     CRM_Core_BAO_Setting::setItem($settings, 'de.systopia.Lijuapi', 'Liju_Api');
   }

@@ -16,7 +16,8 @@
 
 use CRM_Lijuapi_ExtensionUtil as E;
 
-class CRM_Lijuapi_SyncUsers {
+class CRM_Lijuapi_SyncUsers
+{
 
   private $liju_users = [];
 
@@ -24,10 +25,11 @@ class CRM_Lijuapi_SyncUsers {
    * @throws CRM_Lijuapi_Exceptions_UserSyncException
    * @throws CiviCRM_API3_Exception
    */
-  public function __construct() {
+  public function __construct()
+  {
     // get all users from LiJu API, save locally
     $result = civicrm_api3('Liju', 'getusers');
-    if($result['is_error'] != 0) {
+    if ($result['is_error'] != 0) {
       Civi::log()->log("ERROR", 'Error fetching Users from LiJu Database. Error Message: ' . $result['error_message']);
       throw new CRM_Lijuapi_Exceptions_UserSyncException("Error fetching Users from LiJu Database. Code: {$result['error_message']}");
     }
@@ -39,7 +41,8 @@ class CRM_Lijuapi_SyncUsers {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  public function run($group_id = NULL) {
+  public function run($group_id = NULL)
+  {
     CRM_Lijuapi_Utils::log("Syncing CiviCRMUsers to LijuApi Users");
     // filter for certain LV Groups
     $lv_groups = CRM_Lijuapi_Utils::$landesverband_mapping;
@@ -67,46 +70,46 @@ class CRM_Lijuapi_SyncUsers {
       $debug_counter = 0;
       foreach ($result['values'] as $civi_group_info) {
         try {
-        $contact_id = $civi_group_info['contact_id'];
-        $civi_user_email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id);
-        $user_record = $this->get_liju_user_by_civi_mail($civi_user_email);
-        if (empty($user_record)) {
-          // create Link and save it to user if no Link is available already
-          if (!CRM_Lijuapi_Utils::has_invite_link($contact_id)){
-            $result = civicrm_api3('Liju', 'createinvite', [
-              'email' => $civi_user_email['email'],
-              'liju_member_id' => $contact_id,
-              'verband' => $lv,
-            ]);
-            CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
-          } else {
-            // only for debugging
-            CRM_Lijuapi_Utils::log("User ({$contact_id}) is not available in LiJu API but already has an invite Link");
+          $contact_id = $civi_group_info['contact_id'];
+          $civi_user_email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id);
+          $user_record = $this->get_liju_user_by_civi_mail($civi_user_email);
+          if (empty($user_record)) {
+            // create Link and save it to user if no Link is available already
+            if (!CRM_Lijuapi_Utils::has_invite_link($contact_id)) {
+              $result = civicrm_api3('Liju', 'createinvite', [
+                'email' => $civi_user_email['email'],
+                'liju_member_id' => $contact_id,
+                'verband' => $lv,
+              ]);
+              CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
+            } else {
+              // only for debugging
+              CRM_Lijuapi_Utils::log("User ({$contact_id}) is not available in LiJu API but already has an invite Link");
+            }
+            continue;
           }
-          continue;
-        }
-        $email = $user_record['email'];
-        $user_index = $user_record['user_index'];
-        $liju_id = $this->liju_users[$user_index]['ljs_memberid'];
-        if ($liju_id != $contact_id){
-          CRM_Lijuapi_Utils::log("We have an ID Mismatch. CiviCRM ID $contact_id} != liju_member_id {$liju_id}. Trying to update User Record.");
-          // TODO: This doesn't work. We cannot at this point change the liju_member_id in the database
-          $this->update_user_record($liju_id, $contact_id, $email, $lv);
-          // delete invite link from user here, since we have a match!
-          CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
-          // we are done here!
-          continue;
-        }
-        // check if that user can be looked up by member ID
-        $liju_user_key = $this->get_liju_user_record($contact_id, 'ljs_memberid');
-        if (!empty($liju_user_key)) {
-          // !! NOTE: CiviCRM ist datenführend hier! Update the record no matter what
-          // TODO: We only need to update if LV changed, which should have been done via hook.
-          //       technically we don't need to do anything but remove the invite link!
+          $email = $user_record['email'];
+          $user_index = $user_record['user_index'];
+          $liju_id = $this->liju_users[$user_index]['ljs_memberid'];
+          if ($liju_id != $contact_id) {
+            CRM_Lijuapi_Utils::log("We have an ID Mismatch. CiviCRM ID $contact_id} != liju_member_id {$liju_id}. Trying to update User Record.");
+            // TODO: This doesn't work. We cannot at this point change the liju_member_id in the database
+            $this->update_user_record($liju_id, $contact_id, $email, $lv);
+            // delete invite link from user here, since we have a match!
+            CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
+            // we are done here!
+            continue;
+          }
+          // check if that user can be looked up by member ID
+          $liju_user_key = $this->get_liju_user_record($contact_id, 'ljs_memberid');
+          if (!empty($liju_user_key)) {
+            // !! NOTE: CiviCRM ist datenführend hier! Update the record no matter what
+            // TODO: We only need to update if LV changed, which should have been done via hook.
+            //       technically we don't need to do anything but remove the invite link!
 //            $this->update_user_record($contact_id, $contact_id,  $email, $lv);
-          CRM_Lijuapi_Utils::log("Found a matching User {$contact_id}, removing invite Link");
-          CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
-        }
+            CRM_Lijuapi_Utils::log("Found a matching User {$contact_id}, removing invite Link");
+            CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
+          }
         } catch (Exception $e) {
           Civi::log()->log("ERROR", " Error syncing contact {$contact_id}. {$e->getMessage()}");
           // TODO Email notification here? More/different Error handling needed?
@@ -126,8 +129,9 @@ class CRM_Lijuapi_SyncUsers {
    * @return mixed
    * @throws CRM_Lijuapi_Exceptions_NoEmailForMemberException
    */
-  private function get_primary_email($user_emails) {
-    if(empty($user_emails)) {
+  private function get_primary_email($user_emails)
+  {
+    if (empty($user_emails)) {
       throw new CRM_Lijuapi_Exceptions_NoEmailForMemberException("User doesn't have an Email address.");
     }
     foreach ($user_emails as $email_record) {
@@ -140,7 +144,6 @@ class CRM_Lijuapi_SyncUsers {
   }
 
 
-
   /**
    * Search cached liju members for a match to one of the provided user emails
    *
@@ -148,7 +151,8 @@ class CRM_Lijuapi_SyncUsers {
    * @param string $search_attribute
    * @return array
    */
-  private function get_liju_user_by_civi_mail($email) {
+  private function get_liju_user_by_civi_mail($email)
+  {
     $lookup = $this->get_liju_user_record($email['email'], 'email');
     if (!empty($lookup)) {
       return [
@@ -164,7 +168,8 @@ class CRM_Lijuapi_SyncUsers {
    * @param $search_attribute
    * @return false|int|string
    */
-  private function get_liju_user_record($needle, $search_attribute) {
+  private function get_liju_user_record($needle, $search_attribute)
+  {
     return array_search($needle, array_column($this->liju_users, $search_attribute));
   }
 
@@ -175,7 +180,8 @@ class CRM_Lijuapi_SyncUsers {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  private function update_user_record($old_user_id, $contact_id, $email, $lv) {
+  private function update_user_record($old_user_id, $contact_id, $email, $lv)
+  {
     $result = civicrm_api3('Liju', 'updateuser', [
       'old_user_id' => $old_user_id,
       'liju_member_id' => $contact_id,
@@ -192,7 +198,8 @@ class CRM_Lijuapi_SyncUsers {
    * @param $liju_member_id
    * @return void
    */
-  private function get_user_recrod_by_id($liju_member_id) {
+  private function get_user_recrod_by_id($liju_member_id)
+  {
     // TODO this still needed?
   }
 }

@@ -1,4 +1,5 @@
 <?php
+
 use CRM_Lijuapi_ExtensionUtil as E;
 
 /**
@@ -9,7 +10,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/api-architecture/
  */
-function _civicrm_api3_liju_Getusers_spec(&$spec) {
+function _civicrm_api3_liju_Getusers_spec(&$spec)
+{
 //  $spec['email']['api.required'] = 1;
 }
 
@@ -21,11 +23,12 @@ function _civicrm_api3_liju_Getusers_spec(&$spec) {
  * @return array
  *   API result descriptor
  *
+ * @throws API_Exception
  * @see civicrm_api3_create_success
  *
- * @throws API_Exception
  */
-function civicrm_api3_liju_Getusers($params) {
+function civicrm_api3_liju_Getusers($params)
+{
   CRM_Lijuapi_Utils::log("Liju.getUsers " . json_encode($params));
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();

@@ -1,7 +1,9 @@
 <?php
+
 use CRM_Lijuapi_ExtensionUtil as E;
 
-class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler {
+class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler
+{
 
   /**
    * Create a new LijuErrorHandler based on array-data
@@ -9,7 +11,8 @@ class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler 
    * @param array $params key-value pairs
    * @return CRM_Lijuapi_DAO_LijuErrorHandler|NULL
    */
-  public static function create($params) {
+  public static function create($params)
+  {
     $className = 'CRM_Lijuapi_DAO_LijuErrorHandler';
     $entityName = 'LijuErrorHandler';
     $hook = empty($params['id']) ? 'create' : 'edit';
@@ -30,7 +33,8 @@ class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler 
    * TODO: do we need a cleanup routine here?
    * @return array
    */
-  public static function get_non_consumed_items($contact_id=NULL) {
+  public static function get_non_consumed_items($contact_id = NULL)
+  {
     $sql = "
           SELECT * FROM civicrm_lijuapi_errorhandler
             WHERE is_consumed = 0
@@ -40,11 +44,11 @@ class CRM_Lijuapi_BAO_LijuErrorHandler extends CRM_Lijuapi_DAO_LijuErrorHandler 
     $used_ids = [];
     while ($dao->fetch()) {
       // if we have a contact_id, filter for it
-      if(!empty($contact_id)) {
-        if($dao->contact_id == $contact_id) {
+      if (!empty($contact_id)) {
+        if ($dao->contact_id == $contact_id) {
           $return_values[$dao->id] = $dao->toArray();
           $dao->free();
-          return  $return_values;
+          return $return_values;
         }
       } else {
         if (in_array($dao->contact_id, $used_ids)) {

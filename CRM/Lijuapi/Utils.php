@@ -16,7 +16,8 @@
 
 use CRM_Lijuapi_ExtensionUtil as E;
 
-class CRM_Lijuapi_Utils {
+class CRM_Lijuapi_Utils
+{
 
 // SELECT id, name, description FROM civicrm_group WHERE name LIKE "%Mitglied%";
 // Abbrevation after
@@ -45,26 +46,22 @@ class CRM_Lijuapi_Utils {
 
   public static $debug = True;
 
-  // local test mapping
-//  public static $landesverband_mapping = [
-//    'BW' => 5, // Badenwürtenberg Lokal (test)
-//    'NW' => 6, // Nordrhein Westfalen Lokal (test)
-//  ];
-
   private static $singleton = NULL;
 
   /**
    * Get utils singleton
    * @return CRM_Lijuapi_Utils|null
    */
-  public static function singleton() {
+  public static function singleton()
+  {
     if (self::$singleton === NULL) {
       self::$singleton = new CRM_Lijuapi_Utils();
     }
     return self::$singleton;
   }
 
-  public static function get_lv_mapping() {
+  public static function get_lv_mapping()
+  {
     return self::$landesverband_mapping;
   }
 
@@ -74,7 +71,8 @@ class CRM_Lijuapi_Utils {
    * @throws CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException
    * @throws CiviCRM_API3_Exception
    */
-  public static function get_lv($contact_id) {
+  public static function get_lv($contact_id)
+  {
     $result = civicrm_api3('GroupContact', 'get', [
       'sequential' => 1,
       'contact_id' => $contact_id,
@@ -95,7 +93,8 @@ class CRM_Lijuapi_Utils {
    * @return false|int|string
    * @throws CRM_Lijuapi_Exceptions_GroupIdNotLandesverbandException
    */
-  public static function get_lv_from_group_id($civi_group_id) {
+  public static function get_lv_from_group_id($civi_group_id)
+  {
     if (self::is_lv_group($civi_group_id)) {
       return array_search($civi_group_id, self::$landesverband_mapping);
     }
@@ -107,8 +106,9 @@ class CRM_Lijuapi_Utils {
    * @param $group_id
    * @return bool
    */
-  public static function is_lv_group($group_id) {
-    if(in_array($group_id, self::$landesverband_mapping)){
+  public static function is_lv_group($group_id)
+  {
+    if (in_array($group_id, self::$landesverband_mapping)) {
       return TRUE;
     }
     return FALSE;
@@ -119,7 +119,8 @@ class CRM_Lijuapi_Utils {
    * @param $landesverband
    * @return int
    */
-    public static function get_lv_id($landesverband) {
+  public static function get_lv_id($landesverband)
+  {
     return self::$landesverband_mapping[$landesverband];
   }
 
@@ -130,7 +131,8 @@ class CRM_Lijuapi_Utils {
    * @return void
    * @throws CRM_Lijuapi_Exceptions_MissingErrorValueException
    */
-  public static function set_error_case($values) {
+  public static function set_error_case($values)
+  {
     CRM_Lijuapi_Utils::validate_error_case($values);
     $values['is_consumed'] = FALSE;
     // Save it to database
@@ -144,9 +146,10 @@ class CRM_Lijuapi_Utils {
    * @return void
    * @throws CRM_Lijuapi_Exceptions_MissingErrorValueException
    */
-  public static function validate_error_case($values) {
+  public static function validate_error_case($values)
+  {
     $fields = ['contact_id', 'email', 'email_id', 'landesverband', 'group_id', 'errorcode'];
-    foreach ($fields as $item)  {
+    foreach ($fields as $item) {
       if (empty($values[$item])) {
         throw new CRM_Lijuapi_Exceptions_MissingErrorValueException("Missing Value for {$item}");
       }
@@ -161,7 +164,8 @@ class CRM_Lijuapi_Utils {
    * @throws CiviCRM_API3_Exception
    * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
    */
-  public static function add_link_to_user($contact_id, $invite_link){
+  public static function add_link_to_user($contact_id, $invite_link)
+  {
     CRM_Lijuapi_Utils::log("Adding invite Link to user {$contact_id}");
     $custom_field = self::get_custom_invite_field();
     $result = civicrm_api3('Contact', 'create', [
@@ -181,7 +185,8 @@ class CRM_Lijuapi_Utils {
    * @throws CRM_Lijuapi_Exceptions_RemoveInviteLinkException
    * @throws CiviCRM_API3_Exception
    */
-  public static function remove_invite_link_from_user($contact_id) {
+  public static function remove_invite_link_from_user($contact_id)
+  {
     $custom_field = self::get_custom_invite_field();
     $result = civicrm_api3('Contact', 'create', [
       'id' => $contact_id,
@@ -197,7 +202,8 @@ class CRM_Lijuapi_Utils {
    * @return string
    * @throws CRM_Lijuapi_Exceptions_NoInviteLinkCustomFieldException
    */
-  public static function get_custom_invite_field() {
+  public static function get_custom_invite_field()
+  {
     $config = CRM_Lijuapi_Config::singleton();
     $custom_field_id = $config->getSetting('invitelink_custom_field');
     if (empty($custom_field_id)) {
@@ -207,8 +213,8 @@ class CRM_Lijuapi_Utils {
   }
 
 
-
-  public static function has_invite_link($contact_id) {
+  public static function has_invite_link($contact_id)
+  {
     $custom_field = self::get_custom_invite_field();
     $result = civicrm_api3('Contact', 'get', [
       'sequential' => 1,
@@ -228,7 +234,8 @@ class CRM_Lijuapi_Utils {
    * @return array
    * @throws CiviCRM_API3_Exception
    */
-  public static function get_contact_custom_fields() {
+  public static function get_contact_custom_fields()
+  {
     // get all custom fields
     $result = civicrm_api3('CustomField', 'get', [
       'sequential' => 1,
@@ -252,12 +259,13 @@ class CRM_Lijuapi_Utils {
    *
    * // TODO: When are we sending? Directly when error occurs, or via Cron from databse error_table
    */
-  public static function notify_error($error_message, $contact_email, $landesverband, $contact_id = NULL) {
+  public static function notify_error($error_message, $contact_email, $landesverband, $contact_id = NULL)
+  {
     $config = CRM_Lijuapi_Config::singleton();
-    if(!$config->getSetting('notification_email_active')) {
+    if (!$config->getSetting('notification_email_active')) {
       return;
     }
-    if(empty($contact_id)) {
+    if (empty($contact_id)) {
       $contact_id = CRM_Lijuapi_Utils::get_user_id($contact_email);
     }
     $mailer = new CRM_Lijuapi_Mailer();
@@ -270,7 +278,8 @@ class CRM_Lijuapi_Utils {
    * @return mixed|void|null
    * @throws CiviCRM_API3_Exception
    */
-  public static function get_user_id($email) {
+  public static function get_user_id($email)
+  {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
       'email' => $email,
@@ -291,7 +300,8 @@ class CRM_Lijuapi_Utils {
    * @throws CRM_Lijuapi_Exceptions_NoEmailForMemberException
    * @throws CiviCRM_API3_Exception
    */
-  public static function get_primary_email($contact_id) {
+  public static function get_primary_email($contact_id)
+  {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
       'is_primary' => 1,
@@ -312,12 +322,13 @@ class CRM_Lijuapi_Utils {
    * @return void
    * @throws CRM_Lijuapi_Exceptions_MissingErrorValueException
    */
-  public static function email_hook($op, $objectName, $objectId, &$objectRef) {
+  public static function email_hook($op, $objectName, $objectId, &$objectRef)
+  {
     $contact_id = $objectRef->contact_id;
     $email = $objectRef->email;
     $email_id = $objectRef->id;
 
-    try{
+    try {
       CRM_Lijuapi_Utils::log("Email hook editing {$contact_id}, setting email to {$email} ({$email_id})");
       $landesverband = CRM_Lijuapi_Utils::get_lv($contact_id);
       // check if this contact is a member and if this contact doesn't have an invite link!
@@ -332,7 +343,7 @@ class CRM_Lijuapi_Utils {
         'liju_member_id' => $contact_id,
         'new_lv' => $landesverband,
       ]);
-    } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
+    } catch (CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
       // contact isn't a member, nothing to do here.
       CRM_Lijuapi_Utils::log("User {$contact_id} isn't a member. No update Executed.");
       return;
@@ -340,12 +351,12 @@ class CRM_Lijuapi_Utils {
       // Log error, then put information in civicrm_lijuapi_errorhandler
       Civi::log()->log("ERROR", "[UpdateUserException] Failed to communicate with LiJuApi. Error Message: " . $e->getMessage());
       $values = [
-        'contact_id'    => $contact_id,
-        'email'         => $email,
-        'email_id'      => $email_id,
+        'contact_id' => $contact_id,
+        'email' => $email,
+        'email_id' => $email_id,
         'landesverband' => $landesverband,
-        'group_id'      => CRM_Lijuapi_Utils::get_lv_id($landesverband),
-        'errorcode'     => $e->getMessage()
+        'group_id' => CRM_Lijuapi_Utils::get_lv_id($landesverband),
+        'errorcode' => $e->getMessage()
       ];
       CRM_Lijuapi_Utils::set_error_case($values);
       // TODO: Send fail Email?
@@ -367,7 +378,8 @@ class CRM_Lijuapi_Utils {
    * In Form Processor create invite link should be *before* adding the user to a group.
    * Otherwise this will fail 100%, since no user is available *yet*
    */
-  public static function change_lv_hook($op, $objectName, $objectId, &$objectRef) {
+  public static function change_lv_hook($op, $objectName, $objectId, &$objectRef)
+  {
     try {
       if (!self::is_lv_group($objectId)) {
         // nothing to do here
@@ -390,7 +402,7 @@ class CRM_Lijuapi_Utils {
         'liju_member_id' => $contact_id,
         'new_lv' => $landesverband,
       ]);
-    } catch( CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
+    } catch (CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
       // nothing to do here.
       return;
     } catch (CRM_Lijuapi_Exceptions_NoEmailForMemberException $e) {
@@ -400,7 +412,8 @@ class CRM_Lijuapi_Utils {
     }
   }
 
-  public static function get_group_name($civi_group_id) {
+  public static function get_group_name($civi_group_id)
+  {
     $result = civicrm_api3('Group', 'get', [
       'id' => $civi_group_id,
     ]);
@@ -418,7 +431,8 @@ class CRM_Lijuapi_Utils {
    * @return void
    *
    */
-  public static function log($message, $loglevel = "DEBUG") {
+  public static function log($message, $loglevel = "DEBUG")
+  {
     if (self::$debug) {
       Civi::log()->log($loglevel, "[de.systopia.lijuapi] " . $message);
     }
@@ -429,13 +443,14 @@ class CRM_Lijuapi_Utils {
    * @return array
    * @throws CiviCRM_API3_Exception|CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException
    */
-  public static function get_user_primary_email($contact_id, $email_only = FALSE) {
+  public static function get_user_primary_email($contact_id, $email_only = FALSE)
+  {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
       'contact_id' => $contact_id,
       'is_primary' => 1
     ]);
-    if ($result['count'] != 1 ){
+    if ($result['count'] != 1) {
       throw new CRM_Lijuapi_Exceptions_CiviCRMUserEmailNotAvailableException("Found {$result['count']} Email Results for User {$contact_id}");
     }
     $return_values = [];

@@ -88,7 +88,7 @@ class GetInviteLink extends AbstractAction
       // get Landesverband for User
 //      $landesverband =  \CRM_Lijuapi_Utils::get_lv($contact_id);
       $lv_group_id = $parameters->getParameter('group_id');
-      $landesverband =  \CRM_Lijuapi_Utils::get_lv_from_group_id($lv_group_id);
+      $landesverband = \CRM_Lijuapi_Utils::get_lv_from_group_id($lv_group_id);
       $email = $parameters->getParameter('email');
       // get link for User
       $result = civicrm_api3('Liju', 'createinvite', [
@@ -126,7 +126,8 @@ class GetInviteLink extends AbstractAction
    * @throws \CRM_Lijuapi_Exceptions_MissingErrorValueException
    * @throws \CiviCRM_API3_Exception
    */
-  private function generate_error_report($email, $landesverband, $error_message, $contact_id) {
+  private function generate_error_report($email, $landesverband, $error_message, $contact_id)
+  {
     $result = civicrm_api3('Email', 'get', [
       'sequential' => 1,
       'email' => $email,

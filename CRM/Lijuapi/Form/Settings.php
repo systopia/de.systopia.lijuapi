@@ -7,8 +7,10 @@ use CRM_Lijuapi_ExtensionUtil as E;
  *
  * @see https://docs.civicrm.org/dev/en/latest/framework/quickform/
  */
-class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
-  public function buildQuickForm() {
+class CRM_Lijuapi_Form_Settings extends CRM_Core_Form
+{
+  public function buildQuickForm()
+  {
     // get current settings to pre-fill
     $config = CRM_Lijuapi_Config::singleton();
     $current_values = $config->getSettings();
@@ -61,8 +63,8 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
     // submit
     $this->addButtons(array(
       array(
-        'type'      => 'submit',
-        'name'      => E::ts('Save'),
+        'type' => 'submit',
+        'name' => E::ts('Save'),
         'isDefault' => TRUE,
       ),
     ));
@@ -77,7 +79,8 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
   /**
    * @return void
    */
-  public function postProcess() {
+  public function postProcess()
+  {
     $config = CRM_Lijuapi_Config::singleton();
     $values = $this->exportValues();
     $settings = $config->getSettings();
@@ -95,7 +98,8 @@ class CRM_Lijuapi_Form_Settings extends CRM_Core_Form {
    * used as a filter for the values array from post Process
    * @return array
    */
-  protected function getSettingsInForm() {
+  protected function getSettingsInForm()
+  {
     return array(
       'api_base_url',
       'username',

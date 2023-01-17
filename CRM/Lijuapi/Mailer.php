@@ -22,20 +22,22 @@ use CRM_Lijuapi_ExtensionUtil as E;
  *
  * Use CRM_Lijuapi_Mailer->send_error_mail()
  */
-class CRM_Lijuapi_Mailer {
+class CRM_Lijuapi_Mailer
+{
 
-  private $email_from              = 'civi-notify@linksjugend-solid.de';
-  private $email_name_from         = 'LiJu API Notification';
-  private $subject                 = 'Fehler in CiviCRM LiJu API';
-  private $sender_contact_id       = '2';
-  private $template_name           = 'lijuapi_error_notification';
+  private $email_from = 'civi-notify@linksjugend-solid.de';
+  private $email_name_from = 'LiJu API Notification';
+  private $subject = 'Fehler in CiviCRM LiJu API';
+  private $sender_contact_id = '2';
+  private $template_name = 'lijuapi_error_notification';
 
   private $to_email = "";
 
   /**
    * @throws CRM_Lijuapi_Exceptions_MailAddressConfigurationException
    */
-  public function __construct() {
+  public function __construct()
+  {
     $config = CRM_Lijuapi_Config::singleton();
     $this->to_email = $config->getSetting('notification_email');
     if (empty($this->to_email)) {
@@ -52,13 +54,14 @@ class CRM_Lijuapi_Mailer {
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  public function send_error_mail($contact_email, $landesverband, $error_message, $contact_id = NULL, $group_id = NULL) {
+  public function send_error_mail($contact_email, $landesverband, $error_message, $contact_id = NULL, $group_id = NULL)
+  {
     $smarty_variables = [
       'contact_id' => $contact_id,
-      'contact_email'   => $contact_email,
+      'contact_email' => $contact_email,
       'contact_landesverband' => $landesverband,
-      'contact_group_id'  => $group_id,
-      'contact_error_message'  => $error_message,
+      'contact_group_id' => $group_id,
+      'contact_error_message' => $error_message,
       'timestamp' => date('H:i:s Y', strtotime("now")),
     ];
     $template_id = $this->get_template_id($this->template_name);
@@ -82,12 +85,13 @@ class CRM_Lijuapi_Mailer {
    * @return mixed
    * @throws \CiviCRM_API3_Exception
    */
-  private function create_template($template_name) {
+  private function create_template($template_name)
+  {
     $template_content = file_get_contents(__DIR__ . "/../../templates/mailer_template.tpl");
     $result = civicrm_api3('MessageTemplate', 'create', [
-      'sequential'  => 1,
-      'msg_title'   => $template_name,
-      'msg_html'    => $template_content,
+      'sequential' => 1,
+      'msg_title' => $template_name,
+      'msg_html' => $template_content,
       'msg_subject' => $this->subject,
     ]);
     if ($result['is_error'] == '1') {
@@ -102,7 +106,8 @@ class CRM_Lijuapi_Mailer {
    * @return mixed
    * @throws \CiviCRM_API3_Exception
    */
-  private function get_template_id($template_name) {
+  private function get_template_id($template_name)
+  {
     $result = civicrm_api3('MessageTemplate', 'get', array(
       'sequential' => 1,
       'msg_title' => $template_name,

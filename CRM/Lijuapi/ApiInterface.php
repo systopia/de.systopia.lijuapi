@@ -18,7 +18,8 @@ use CRM_Lijuapi_ExtensionUtil as E;
 
 use GuzzleHttp\Client;
 
-class CRM_Lijuapi_ApiInterface {
+class CRM_Lijuapi_ApiInterface
+{
 
   private $guzzle_client = NULL;
   private $base_uri = NULL;
@@ -27,14 +28,15 @@ class CRM_Lijuapi_ApiInterface {
   /**
    * @throws CRM_Lijuapi_Exceptions_InvalidBaseUrlException
    */
-  public function __construct($base_uri = NULL, $username = NULL, $token = NULL) {
+  public function __construct($base_uri = NULL, $username = NULL, $token = NULL)
+  {
     if (empty($base_uri) && empty($username) && empty($token)) {
       $config = CRM_Lijuapi_Config::singleton();
       $this->base_uri = $config->getSetting('api_base_url');
       if (empty($this->base_uri)) {
         throw new CRM_Lijuapi_Exceptions_InvalidBaseUrlException("Invalid Base-URL. Please configure an URL in the settings");
       }
-      $auth_token = $config->getSetting('username') . ":" .  $config->getSetting('authorization_token');
+      $auth_token = $config->getSetting('username') . ":" . $config->getSetting('authorization_token');
     } else {
       $auth_token = $token;
       $this->base_uri = $base_uri;
@@ -61,7 +63,8 @@ class CRM_Lijuapi_ApiInterface {
    * @throws CRM_Lijuapi_Exceptions_UpdateLvException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function change_lv($liju_member_id, $email, $new_lv) {
+  public function change_lv($liju_member_id, $email, $new_lv)
+  {
     $this->header['form_params']['verband'] = $new_lv;
     $this->header['form_params']['mail'] = $email;
     $response = $this->guzzle_client->request(
@@ -79,7 +82,8 @@ class CRM_Lijuapi_ApiInterface {
    * @return array
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function get_users() {
+  public function get_users()
+  {
     $response = $this->guzzle_client->request(
       'GET',
       '/api/v1/civicrm/getusers',
@@ -98,7 +102,8 @@ class CRM_Lijuapi_ApiInterface {
    * @throws CRM_Lijuapi_Exceptions_CreateInviteLinkException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function get_invite_link($email, $liju_member_id, $verband) {
+  public function get_invite_link($email, $liju_member_id, $verband)
+  {
     $this->header['form_params']['verband'] = $verband;
     $this->header['form_params']['mail'] = $email;
     $this->header['form_params']['ljs_memberid'] = $liju_member_id;
@@ -124,8 +129,9 @@ class CRM_Lijuapi_ApiInterface {
    * @throws CRM_Lijuapi_Exceptions_UpdateUserException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function update_liju_user($old_user_id, $liju_member_id, $email, $verband) {
-    if(empty($email) && empty($verband)){
+  public function update_liju_user($old_user_id, $liju_member_id, $email, $verband)
+  {
+    if (empty($email) && empty($verband)) {
       Civi::log()->log("DEBUG", "[CRM_Lijuapi_ApiInterface->update_liju_user] No User Data specified to update. Nothing to do here.");
       return;
     }
