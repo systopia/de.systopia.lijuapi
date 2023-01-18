@@ -14,7 +14,9 @@ use \Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 function lijuapi_civicrm_container(ContainerBuilder $container)
 {
+  if(class_exists("\Civi\Lijuapi\ContainerSpecs")){
     $container->addCompilerPass(new \Civi\Lijuapi\ContainerSpecs());
+  }
 }
 
 /**
