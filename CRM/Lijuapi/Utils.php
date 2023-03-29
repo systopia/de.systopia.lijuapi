@@ -339,7 +339,6 @@ class CRM_Lijuapi_Utils
         return;
       }
       $result = civicrm_api3('Liju', 'changelv', [
-        'email' => $email,
         'liju_member_id' => $contact_id,
         'new_lv' => $landesverband,
       ]);
@@ -395,10 +394,8 @@ class CRM_Lijuapi_Utils
         return;
       }
       $landesverband = self::get_lv_from_group_id($objectId);
-      $email = self::get_primary_email($contact_id);
 
       $result = civicrm_api3('Liju', 'changelv', [
-        'email' => $email,
         'liju_member_id' => $contact_id,
         'new_lv' => $landesverband,
       ]);

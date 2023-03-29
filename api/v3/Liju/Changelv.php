@@ -34,11 +34,11 @@ function civicrm_api3_liju_Changelv($params)
   CRM_Lijuapi_Utils::log("Liju.changelv " . json_encode($params));
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();
-    $api_interface->change_lv($params['liju_member_id'], $params['email'], $params['new_lv']);
+    $api_interface->change_lv($params['liju_member_id'], $params['new_lv']);
     return civicrm_api3_create_success(["Contact with LiJu MemberID ({$params['liju_member_id']}) updated to new LV" => $params['new_lv']]);
   } catch (Exception $e) {
     // send notification Message $error_message, $contact_email, $landesverband, $contact_id = NULL
-    CRM_Lijuapi_Utils::notify_error("Error occured in Liju.changelv: " . $e->getMessage(), $params['email'], $params['new_lv'], $params['liju_member_id']);
+    CRM_Lijuapi_Utils::notify_error("Error occured in Liju.changelv: " . $e->getMessage(), $params['new_lv'], $params['liju_member_id']);
     throw new API_Exception($e->getMessage());
   }
 }
