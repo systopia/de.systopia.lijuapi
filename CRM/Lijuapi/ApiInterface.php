@@ -102,11 +102,12 @@ class CRM_Lijuapi_ApiInterface
    * @throws CRM_Lijuapi_Exceptions_CreateInviteLinkException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function get_invite_link($email, $liju_member_id, $verband)
+  public function get_invite_link($email, $liju_member_id, $verband, $is_sds_member)
   {
     $this->header['form_params']['verband'] = $verband;
     $this->header['form_params']['mail'] = $email;
     $this->header['form_params']['ljs_memberid'] = $liju_member_id;
+    $this->header['form_params']['is_sds_member'] = $is_sds_member;
     $response = $this->guzzle_client->request(
       'POST',
       "api/v1/civicrm/invite/new",
@@ -125,18 +126,23 @@ class CRM_Lijuapi_ApiInterface
    * @param $liju_member_id
    * @param $email
    * @param $verband
+   * @param $is_sds_member
    * @return void
    * @throws CRM_Lijuapi_Exceptions_UpdateUserException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function update_liju_user($old_user_id, $liju_member_id, $email, $verband)
+  public function update_liju_user($old_user_id, $liju_member_id, $email, $verband, $is_sds_member)
   {
-    if (empty($email) && empty($verband)) {
+    if (empty($email) && empty($verband) && empty($is_sds_member)) {
       Civi::log()->log("DEBUG", "[CRM_Lijuapi_ApiInterface->update_liju_user] No User Data specified to update. Nothing to do here.");
       return;
     }
-    $this->header['form_params']['verband'] = $verband;
-    $this->header['form_params']['mail'] = $email;
+    if (! empty($email))
+        $this->header['form_params']['verband'] = $verband;
+    if (! empty($email))
+        $this->header['form_params']['mail'] = $email;
+    if (! empty($is_sds_member))
+        $this->header['form_params']['is_sds_member'] = $is_sds_member;
 
     $response = $this->guzzle_client->request(
       'POST',

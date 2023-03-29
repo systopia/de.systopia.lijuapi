@@ -15,6 +15,7 @@ function _civicrm_api3_liju_Createinvite_spec(&$spec)
   $spec['email']['api.required'] = 1;
   $spec['liju_member_id']['api.required'] = 1;
   $spec['verband']['api.required'] = 1;
+  $spec['is_sds_member']['api.required'] = 1;
 }
 
 /**
@@ -34,10 +35,12 @@ function civicrm_api3_liju_Createinvite($params)
   CRM_Lijuapi_Utils::log("Liju.createinvite " . json_encode($params));
   try {
     $api_interface = new CRM_Lijuapi_ApiInterface();
-    $invite_link = $api_interface->get_invite_link($params['email'], $params['liju_member_id'], $params['verband']);
+    $invite_link = $api_interface->get_invite_link($params['email'], $params['liju_member_id'],
+                                                   $params['verband'], $params['is_sds_member']);
     return civicrm_api3_create_success(["invite_link" => $invite_link]);
   } catch (Exception $e) {
-    CRM_Lijuapi_Utils::notify_error("Error occured in Liju.createinvite: " . $e->getMessage(), $params['email'], $params['verband'], $params['liju_member_id']);
+    CRM_Lijuapi_Utils::notify_error("Error occured in Liju.createinvite: " . $e->getMessage(),
+        $params['email'], $params['verband'], $params['liju_member_id'], $params['is_sds_member']);
     throw new API_Exception($e->getMessage());
   }
 }

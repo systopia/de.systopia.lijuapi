@@ -466,4 +466,18 @@ class CRM_Lijuapi_Utils
     return $return_values;
   }
 
+  /**
+   * @return array
+   */
+  public static function get_sds_group()
+  {
+    $result = civicrm_api3('GroupContact', 'get', [
+          'group_id'   => 35 // SDS_Mitglieder_35,
+          'status'     => 'Added',
+          'sequential' => 1,
+          'return'     => ['contact_id', 'status'],
+          'options'    => ['limit' => 0],
+        ]);
+    return array_column($result['values'], 'contact_id');
+  }
 }
