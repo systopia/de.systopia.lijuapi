@@ -131,14 +131,16 @@ class CRM_Lijuapi_ApiInterface
    */
   public function update_liju_user($old_user_id, $liju_member_id, $email, $verband, $is_sds_member)
   {
-    if (empty($email) && empty($verband) && empty($is_sds_member)) {
+    if (empty($liju_member_id) && empty($email) && empty($verband) && empty($is_sds_member)) {
       Civi::log()->log("DEBUG", "[CRM_Lijuapi_ApiInterface->update_liju_user] No User Data specified to update. Nothing to do here.");
       return;
     }
-    if (! empty($email))
-        $this->header['form_params']['verband'] = $verband;
+    if (! empty($liju_member_id))
+        $this->header['form_params']['memberid'] = $liju_member_id;
     if (! empty($email))
         $this->header['form_params']['mail'] = $email;
+    if (! empty($verband))
+        $this->header['form_params']['verband'] = $verband;
     if (! empty($is_sds_member))
         $this->header['form_params']['is_sds_member'] = $is_sds_member;
 
