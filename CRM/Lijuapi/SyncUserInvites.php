@@ -27,6 +27,7 @@ class CRM_Lijuapi_SyncUserInvites
   private $groups;
   private $user_count;
   private $current_counter;
+  private $sds_group_members;
 
   /**
    * @param $group_id
@@ -43,6 +44,9 @@ class CRM_Lijuapi_SyncUserInvites
     }
     $this->user_count = $count;
     $this->current_counter = 0;
+
+    // Get all SDS group contact_ids so we can check is_sds_member for each user
+    $this->sds_group_members = CRM_Lijuapi_Utils::get_sds_group();
   }
 
   /**
@@ -88,10 +92,12 @@ class CRM_Lijuapi_SyncUserInvites
           continue;
         }
         $email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id)['email'];
+        $is_sds_member = in_array($contact_id, $this->sds_group_members);
         $result = civicrm_api3('Liju', 'createinvite', [
           'email' => $email,
           'liju_member_id' => $contact_id,
           'verband' => $lv,
+          'is_sds_member' => $is_sds_member,
         ]);
 
         CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);

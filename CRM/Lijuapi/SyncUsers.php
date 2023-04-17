@@ -20,6 +20,7 @@ class CRM_Lijuapi_SyncUsers
 {
 
   private $liju_users = [];
+  private $sds_group_members = [];
 
   /**
    * @throws CRM_Lijuapi_Exceptions_UserSyncException
@@ -35,6 +36,9 @@ class CRM_Lijuapi_SyncUsers
     }
     // save liJu API Users in local cache
     $this->liju_users = $result['values']['liju_api_users'];
+
+    // Get all SDS group contact_ids so we can check is_sds_member for each user
+    $this->sds_group_members = CRM_Lijuapi_Utils::get_sds_group();
   }
 
   /**
@@ -71,54 +75,47 @@ class CRM_Lijuapi_SyncUsers
       foreach ($result['values'] as $civi_group_info) {
         try {
           $contact_id = $civi_group_info['contact_id'];
-          $civi_user_email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id);
-          $user_record = $this->get_liju_user_by_civi_mail($civi_user_email);
-          if (empty($user_record)) {
+          $civi_user_email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id, true);
+          $is_sds_member = in_array($contact_id, $this->sds_group_members);
+
+          $liju_user = $this->get_liju_user_record_by_id($contact_id);
+          if (empty($liju_user)) {
             // create Link and save it to user if no Link is available already
             if (!CRM_Lijuapi_Utils::has_invite_link($contact_id)) {
               $result = civicrm_api3('Liju', 'createinvite', [
-                'email' => $civi_user_email['email'],
+                'email' => $civi_user_email,
                 'liju_member_id' => $contact_id,
                 'verband' => $lv,
+                'is_sds_member' => $is_sds_member,
               ]);
               CRM_Lijuapi_Utils::add_link_to_user($contact_id, $result['values']['invite_link']);
             } else {
               // only for debugging
-              CRM_Lijuapi_Utils::log("User ({$contact_id}) is not available in LiJu API but already has an invite Link");
+              CRM_Lijuapi_Utils::log("User ($contact_id) is not available in LiJu API but already has an invite Link");
             }
             continue;
           }
-          $email = $user_record['email'];
-          $user_index = $user_record['user_index'];
-          $liju_id = $this->liju_users[$user_index]['ljs_memberid'];
-          if ($liju_id != $contact_id) {
-            CRM_Lijuapi_Utils::log("We have an ID Mismatch. CiviCRM ID $contact_id} != liju_member_id {$liju_id}. Trying to update User Record.");
-            // TODO: This doesn't work. We cannot at this point change the liju_member_id in the database
-            $this->update_user_record($liju_id, $contact_id, $email, $lv);
-            // delete invite link from user here, since we have a match!
-            CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
-            // we are done here!
-            continue;
+          // delete invite link from user here, since we have a match!
+          CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
+
+          if ($liju_user['is_sds_member'] != $is_sds_member) {
+            CRM_Lijuapi_Utils::log("CiviCRM User $civi_user_email($contact_id) changed SDS membership (" . ($is_sds_member ? 'entered' : 'exited') . "). Updating User Record.");
+            $this->update_user_record($contact_id, null, null, null, $is_sds_member);
           }
-          // check if that user can be looked up by member ID
-          $liju_user_key = $this->get_liju_user_record($contact_id, 'ljs_memberid');
-          if (!empty($liju_user_key)) {
-            // !! NOTE: CiviCRM ist datenführend hier! Update the record no matter what
-            // TODO: We only need to update if LV changed, which should have been done via hook.
-            //       technically we don't need to do anything but remove the invite link!
-//            $this->update_user_record($contact_id, $contact_id,  $email, $lv);
-            CRM_Lijuapi_Utils::log("Found a matching User {$contact_id}, removing invite Link");
-            CRM_Lijuapi_Utils::remove_invite_link_from_user($contact_id);
+
+          if ($liju_user['email'] != $civi_user_email) {
+            CRM_Lijuapi_Utils::log("CiviCRM User $civi_user_email($contact_id) changed their email ('{$liju_user['email']}' in LJS Intranet) without the email_change hook noticing. Updating User Record.");
+            $this->update_user_record($contact_id, null, $civi_user_email, null, null);
           }
+
+          if ($liju_user['verband'] != $lv) {
+            CRM_Lijuapi_Utils::log("CiviCRM User $civi_user_email($contact_id) changed their verband ('{$liju_user['verband']}' in LJS Intranet, now $lv) without the verband_change hook noticing. Updating User Record.");
+            $this->update_user_record($contact_id, null, null, $lv, null);
+          }
+
         } catch (Exception $e) {
-          Civi::log()->log("ERROR", " Error syncing contact {$contact_id}. {$e->getMessage()}");
-          // TODO Email notification here? More/different Error handling needed?
+          Civi::log()->log("ERROR", " Error syncing contact $contact_id. {$e->getMessage()}");
         }
-//        $debug_counter +=1;
-//        if ($debug_counter > 20) {
-//          CRM_Lijuapi_Utils::log("Finished debugging run");
-//          return;
-//        }
       }
     }
   }
@@ -145,61 +142,35 @@ class CRM_Lijuapi_SyncUsers
 
 
   /**
-   * Search cached liju members for a match to one of the provided user emails
-   *
-   * @param $email
-   * @param string $search_attribute
-   * @return array
-   */
-  private function get_liju_user_by_civi_mail($email)
-  {
-    $lookup = $this->get_liju_user_record($email['email'], 'email');
-    if (!empty($lookup)) {
-      return [
-        'email' => $email['email'],
-        'user_index' => $lookup,
-      ];
-    }
-    return [];
-  }
-
-  /**
-   * @param $needle
-   * @param $search_attribute
+   * @param $contact_id
    * @return false|int|string
    */
-  private function get_liju_user_record($needle, $search_attribute)
+  private function get_liju_user_record_by_id($contact_id)
   {
-    return array_search($needle, array_column($this->liju_users, $search_attribute));
+    return array_search($contact_id, array_column($this->liju_users, 'ljs_memberid'));
   }
 
   /**
-   * @param $contact_id
+   * @param $current_contact_id
+   * @param $new_contact_id
    * @param $email
    * @param $lv
+   * @param $is_sds_member
    * @return void
    * @throws CiviCRM_API3_Exception
    */
-  private function update_user_record($old_user_id, $contact_id, $email, $lv)
+  private function update_user_record($current_contact_id, $new_contact_id, $email, $lv, $is_sds_member)
   {
     $result = civicrm_api3('Liju', 'updateuser', [
-      'old_user_id' => $old_user_id,
-      'liju_member_id' => $contact_id,
+      'old_user_id' => $current_contact_id,
+      'liju_member_id' => $new_contact_id,
       'email' => $email,
       'verband' => $lv,
+      'is_sds_member' => $is_sds_member,
     ]);
     if ($result['is_error'] != 0) {
       Civi::log()->log("DEBUG", "Error occured while Updating User Record in LiJu Member database. " . $result['error_message']);
       throw new Exception("Error occured while Updating User Record in LiJu Member database. " . $result['error_message']);
     }
-  }
-
-  /**
-   * @param $liju_member_id
-   * @return void
-   */
-  private function get_user_recrod_by_id($liju_member_id)
-  {
-    // TODO this still needed?
   }
 }

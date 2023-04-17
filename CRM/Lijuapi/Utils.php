@@ -330,7 +330,6 @@ class CRM_Lijuapi_Utils
 
     try {
       CRM_Lijuapi_Utils::log("Email hook editing {$contact_id}, setting email to {$email} ({$email_id})");
-      $landesverband = CRM_Lijuapi_Utils::get_lv($contact_id);
       // check if this contact is a member and if this contact doesn't have an invite link!
       // if invite link is available, then we cannot update the user (yet), since it isn't created yet.
       if (self::has_invite_link($contact_id)) {
@@ -338,11 +337,16 @@ class CRM_Lijuapi_Utils
         CRM_Lijuapi_Utils::log("User {$contact_id} still has an invite link, Email update wont be executed since no user is in Liju Membership Database yet.");
         return;
       }
-      $result = civicrm_api3('Liju', 'changelv', [
-        'email' => $email,
-        'liju_member_id' => $contact_id,
-        'new_lv' => $landesverband,
+      $result = civicrm_api3('Liju', 'updateuser', [
+          'old_user_id' => $contact_id,
+          'liju_member_id' => null,
+          'email' => $email,
+          'verband' => null,
+          'is_sds_member' => null,
       ]);
+      if ($result['is_error'] != 0)
+        Civi::log()->log("DEBUG", "Error occured while Updating User Record in LiJu Member database. " . $result['error_message']);
+
     } catch (CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
       // contact isn't a member, nothing to do here.
       CRM_Lijuapi_Utils::log("User {$contact_id} isn't a member. No update Executed.");
@@ -395,13 +399,17 @@ class CRM_Lijuapi_Utils
         return;
       }
       $landesverband = self::get_lv_from_group_id($objectId);
-      $email = self::get_primary_email($contact_id);
 
-      $result = civicrm_api3('Liju', 'changelv', [
-        'email' => $email,
-        'liju_member_id' => $contact_id,
-        'new_lv' => $landesverband,
+      $result = civicrm_api3('Liju', 'updateuser', [
+          'old_user_id' => $contact_id,
+          'liju_member_id' => null,
+          'email' => null,
+          'verband' => $landesverband,
+          'is_sds_member' => null,
       ]);
+      if ($result['is_error'] != 0)
+        Civi::log()->log("DEBUG", "Error occured while Updating User Record in LiJu Member database. " . $result['error_message']);
+
     } catch (CRM_Lijuapi_Exceptions_NoLvMemberShipFoundException $e) {
       // nothing to do here.
       return;
@@ -466,4 +474,18 @@ class CRM_Lijuapi_Utils
     return $return_values;
   }
 
+  /**
+   * @return array
+   */
+  public static function get_sds_group()
+  {
+    $result = civicrm_api3('GroupContact', 'get', [
+          'group_id'   => self::$sds_group_id,
+          'status'     => 'Added',
+          'sequential' => 1,
+          'return'     => ['contact_id', 'status'],
+          'options'    => ['limit' => 0],
+        ]);
+    return array_column($result['values'], 'contact_id');
+  }
 }
