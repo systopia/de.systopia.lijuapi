@@ -480,7 +480,7 @@ class CRM_Lijuapi_Utils
   public static function get_sds_group()
   {
     $result = civicrm_api3('GroupContact', 'get', [
-          'group_id'   => 35 // SDS_Mitglieder_35,
+          'group_id'   => self::$sds_group_id,
           'status'     => 'Added',
           'sequential' => 1,
           'return'     => ['contact_id', 'status'],

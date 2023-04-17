@@ -38,7 +38,7 @@ class CRM_Lijuapi_SyncUsers
     $this->liju_users = $result['values']['liju_api_users'];
 
     // Get all SDS group contact_ids so we can check is_sds_member for each user
-    $this->$sds_group_members = CRM_Lijuapi_Utils::get_sds_group();
+    $this->sds_group_members = CRM_Lijuapi_Utils::get_sds_group();
   }
 
   /**
@@ -76,7 +76,7 @@ class CRM_Lijuapi_SyncUsers
         try {
           $contact_id = $civi_group_info['contact_id'];
           $civi_user_email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id, true);
-          $is_sds_member = in_array($contact_id, $this->$sds_group_members);
+          $is_sds_member = in_array($contact_id, $this->sds_group_members);
 
           $liju_user = $this->get_liju_user_record_by_id($contact_id);
           if (empty($liju_user)) {

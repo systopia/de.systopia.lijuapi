@@ -46,7 +46,7 @@ class CRM_Lijuapi_SyncUserInvites
     $this->current_counter = 0;
 
     // Get all SDS group contact_ids so we can check is_sds_member for each user
-    $this->$sds_group_members = CRM_Lijuapi_Utils::get_sds_group();
+    $this->sds_group_members = CRM_Lijuapi_Utils::get_sds_group();
   }
 
   /**
@@ -92,7 +92,7 @@ class CRM_Lijuapi_SyncUserInvites
           continue;
         }
         $email = CRM_Lijuapi_Utils::get_user_primary_email($contact_id)['email'];
-        $is_sds_member = in_array($contact_id, $this->$sds_group_members);
+        $is_sds_member = in_array($contact_id, $this->sds_group_members);
         $result = civicrm_api3('Liju', 'createinvite', [
           'email' => $email,
           'liju_member_id' => $contact_id,
